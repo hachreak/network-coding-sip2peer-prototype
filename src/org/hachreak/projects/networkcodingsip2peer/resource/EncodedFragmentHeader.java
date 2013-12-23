@@ -1,3 +1,22 @@
+/**
+ * Copyright (C) 2013 Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
+ *
+ * This source code is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
 package org.hachreak.projects.networkcodingsip2peer.resource;
 
 import org.hachreak.projects.gfjama.matrix.GaloisField;
@@ -7,7 +26,7 @@ import org.hachreak.projects.gfjama.matrix.GaloisField;
  * the generation's tag, the resource's key and the codingVector.
  * 
  *
- * @author  Riccardo Bussandri (riccardo.bussandri@studenti.unipr.it)
+ * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
  *
  */
 public class EncodedFragmentHeader {
@@ -18,53 +37,32 @@ public class EncodedFragmentHeader {
 	
 	private char[] codingVector;
 	
-	private int resourceKey;
+	private byte[] resourceKey;
 
 	private int fragmentSize;
 
 	private GaloisField galoisField;
 	
-	public EncodedFragmentHeader(int fragmentKey, int fileId, char[] codingVector, int fragmentSize, GaloisField galoisField){//, byte generationTag) {
+	public EncodedFragmentHeader(int fragmentKey, byte[] fileId, char[] codingVector, int fragmentSize, GaloisField galoisField){//, byte generationTag) {
 		this.fragmentKey = fragmentKey;
 		this.resourceKey = fileId;
 		this.codingVector = codingVector;
 		this.fragmentSize = fragmentSize;
 		this.galoisField = galoisField;
-		//this.generationTag = generationTag;
 	}
 
 	public int getFragmentKey() {
 		return fragmentKey;
 	}
 
-//	public void setFragmentKey(int fragmentKey) {
-//		this.fragmentKey = fragmentKey;
-//	}
-
-//	public byte getGenerationTag() {
-//		return generationTag;
-//	}
-//
-//	public void setGenerationTag(byte generationTag) {
-//		this.generationTag = generationTag;
-//	}
-
 	public char[] getCodingVector() {
 		return codingVector;
 	}
 
-//	public void setCodingVector(char[] codingVector) {
-//		this.codingVector = codingVector;
-//	}
-
-	public int getResourceKey() {
+	public byte[] getResourceKey() {
 		return resourceKey;
 	}
 
-//	public void setResourceKey(int fileId) {
-//		this.resourceKey = fileId;
-//	}
-	
 	/**
 	 * TODO Temporary function for generation of key
 	 * @return
