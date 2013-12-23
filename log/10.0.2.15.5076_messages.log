@@ -1,0 +1,81 @@
+1384793995485: 17:59:55.485 Mon 18 Nov 2013, 10.0.2.15:5080/udp (572 bytes) sent
+MESSAGE sip:bootstrap@10.0.2.15:5080 SIP/2.0
+Via: SIP/2.0/UDP 10.0.2.15:5076;rport;branch=z9hG4bK3fae4eb9
+Max-Forwards: 70
+To: <sip:bootstrap@10.0.2.15:5080>
+From: <sip:pippo@10.0.2.15:5076>;tag=908494664242
+Call-ID: 453758027898@10.0.2.15
+CSeq: 1 MESSAGE
+Expires: 3600
+User-Agent: mjsip 1.7
+Content-Length: 216
+Content-Type: application/json
+
+{"timestamp":1384793995446,"numPeerList":100,"payload":{"params":{"address":"pippo@10.0.2.15:5076","name":"pippo","key":"5d41402abc4b2a76b9719d911017c592","contactAddress":"pippo@10.0.2.15:5076"}},"type":"peer_join"}-----End-of-message-----
+
+1384793995504: 17:59:55.504 Mon 18 Nov 2013, 10.0.2.15:5080/udp (260 bytes) received
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP 10.0.2.15:5076;branch=z9hG4bK3fae4eb9;rport=5076
+To: <sip:bootstrap@10.0.2.15:5080>
+From: <sip:pippo@10.0.2.15:5076>;tag=908494664242
+Call-ID: 453758027898@10.0.2.15
+CSeq: 1 MESSAGE
+Server: mjsip 1.7
+Content-Length: 0
+
+-----End-of-message-----
+
+1384793995541: 17:59:55.540 Mon 18 Nov 2013, 10.0.2.15:5080/udp (584 bytes) received
+MESSAGE sip:pippo@10.0.2.15:5076 SIP/2.0
+Via: SIP/2.0/UDP 10.0.2.15:5080;rport;branch=z9hG4bK201af085
+Max-Forwards: 70
+To: <sip:pippo@10.0.2.15:5076>
+From: <sip:bootstrap@10.0.2.15:5080>;tag=697399396245
+Call-ID: 552661607290@10.0.2.15
+CSeq: 1 MESSAGE
+Expires: 3600
+User-Agent: mjsip 1.7
+Content-Length: 232
+Content-Type: application/json
+
+{"timestamp":1384793995529,"payload":{"params":{"3c200eb1d5cf4a4de34a94d984350f84":{"address":"kate@10.0.2.15:5075","name":"kate","key":"3c200eb1d5cf4a4de34a94d984350f84","contactAddress":"kate@10.0.2.15:5075"}}},"type":"peer_list"}-----End-of-message-----
+
+1384793995580: 17:59:55.580 Mon 18 Nov 2013, 10.0.2.15:5080/udp (260 bytes) sent
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP 10.0.2.15:5080;branch=z9hG4bK201af085;rport=5080
+To: <sip:pippo@10.0.2.15:5076>
+From: <sip:bootstrap@10.0.2.15:5080>;tag=697399396245
+Call-ID: 552661607290@10.0.2.15
+CSeq: 1 MESSAGE
+Server: mjsip 1.7
+Content-Length: 0
+
+-----End-of-message-----
+
+1384793999581: 17:59:59.581 Mon 18 Nov 2013, 10.0.2.15:5077/udp (425 bytes) received
+MESSAGE sip:pippo@10.0.2.15:5076 SIP/2.0
+Via: SIP/2.0/UDP 10.0.2.15:5077;rport;branch=z9hG4bK825acc31
+Max-Forwards: 70
+To: <sip:pippo@10.0.2.15:5076>
+From: <sip:gnuppo@10.0.2.15:5077>;tag=063521385236
+Call-ID: 355581590687@10.0.2.15
+CSeq: 1 MESSAGE
+Expires: 3600
+User-Agent: mjsip 1.7
+Content-Length: 77
+Content-Type: application/json
+
+{"timestamp":1384793999565,"payload":{"params":{}},"type":"fragment_publish"}-----End-of-message-----
+
+1384793999618: 17:59:59.617 Mon 18 Nov 2013, 10.0.2.15:5077/udp (257 bytes) sent
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP 10.0.2.15:5077;branch=z9hG4bK825acc31;rport=5077
+To: <sip:pippo@10.0.2.15:5076>
+From: <sip:gnuppo@10.0.2.15:5077>;tag=063521385236
+Call-ID: 355581590687@10.0.2.15
+CSeq: 1 MESSAGE
+Server: mjsip 1.7
+Content-Length: 0
+
+-----End-of-message-----
+

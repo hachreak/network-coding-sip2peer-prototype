@@ -1,0 +1,81 @@
+1384793993412: 17:59:53.412 Mon 18 Nov 2013, 10.0.2.15:5080/udp (568 bytes) sent
+MESSAGE sip:bootstrap@10.0.2.15:5080 SIP/2.0
+Via: SIP/2.0/UDP 10.0.2.15:5075;rport;branch=z9hG4bK0b91463c
+Max-Forwards: 70
+To: <sip:bootstrap@10.0.2.15:5080>
+From: <sip:kate@10.0.2.15:5075>;tag=236330840417
+Call-ID: 265759846169@10.0.2.15
+CSeq: 1 MESSAGE
+Expires: 3600
+User-Agent: mjsip 1.7
+Content-Length: 213
+Content-Type: application/json
+
+{"timestamp":1384793993201,"numPeerList":100,"payload":{"params":{"address":"kate@10.0.2.15:5075","name":"kate","key":"3c200eb1d5cf4a4de34a94d984350f84","contactAddress":"kate@10.0.2.15:5075"}},"type":"peer_join"}-----End-of-message-----
+
+1384793993580: 17:59:53.580 Mon 18 Nov 2013, 10.0.2.15:5080/udp (259 bytes) received
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP 10.0.2.15:5075;branch=z9hG4bK0b91463c;rport=5075
+To: <sip:bootstrap@10.0.2.15:5080>
+From: <sip:kate@10.0.2.15:5075>;tag=236330840417
+Call-ID: 265759846169@10.0.2.15
+CSeq: 1 MESSAGE
+Server: mjsip 1.7
+Content-Length: 0
+
+-----End-of-message-----
+
+1384793993792: 17:59:53.792 Mon 18 Nov 2013, 10.0.2.15:5080/udp (419 bytes) received
+MESSAGE sip:kate@10.0.2.15:5075 SIP/2.0
+Via: SIP/2.0/UDP 10.0.2.15:5080;rport;branch=z9hG4bKdd732b0f
+Max-Forwards: 70
+To: <sip:kate@10.0.2.15:5075>
+From: <sip:bootstrap@10.0.2.15:5080>;tag=039236081239
+Call-ID: 305706726993@10.0.2.15
+CSeq: 1 MESSAGE
+Expires: 3600
+User-Agent: mjsip 1.7
+Content-Length: 70
+Content-Type: application/json
+
+{"timestamp":1384793993740,"payload":{"params":{}},"type":"peer_list"}-----End-of-message-----
+
+1384793993818: 17:59:53.818 Mon 18 Nov 2013, 10.0.2.15:5080/udp (259 bytes) sent
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP 10.0.2.15:5080;branch=z9hG4bKdd732b0f;rport=5080
+To: <sip:kate@10.0.2.15:5075>
+From: <sip:bootstrap@10.0.2.15:5080>;tag=039236081239
+Call-ID: 305706726993@10.0.2.15
+CSeq: 1 MESSAGE
+Server: mjsip 1.7
+Content-Length: 0
+
+-----End-of-message-----
+
+1384793999549: 17:59:59.549 Mon 18 Nov 2013, 10.0.2.15:5077/udp (423 bytes) received
+MESSAGE sip:kate@10.0.2.15:5075 SIP/2.0
+Via: SIP/2.0/UDP 10.0.2.15:5077;rport;branch=z9hG4bK15d7ca03
+Max-Forwards: 70
+To: <sip:kate@10.0.2.15:5075>
+From: <sip:gnuppo@10.0.2.15:5077>;tag=252168948570
+Call-ID: 499477003116@10.0.2.15
+CSeq: 1 MESSAGE
+Expires: 3600
+User-Agent: mjsip 1.7
+Content-Length: 77
+Content-Type: application/json
+
+{"timestamp":1384793999546,"payload":{"params":{}},"type":"fragment_publish"}-----End-of-message-----
+
+1384793999565: 17:59:59.565 Mon 18 Nov 2013, 10.0.2.15:5077/udp (256 bytes) sent
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP 10.0.2.15:5077;branch=z9hG4bK15d7ca03;rport=5077
+To: <sip:kate@10.0.2.15:5075>
+From: <sip:gnuppo@10.0.2.15:5077>;tag=252168948570
+Call-ID: 499477003116@10.0.2.15
+CSeq: 1 MESSAGE
+Server: mjsip 1.7
+Content-Length: 0
+
+-----End-of-message-----
+
