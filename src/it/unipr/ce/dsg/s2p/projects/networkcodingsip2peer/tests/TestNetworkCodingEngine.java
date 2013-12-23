@@ -3,24 +3,20 @@
  */
 package it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.tests;
 
-import static org.junit.Assert.*;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.engine.CodingEngine;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.engine.NetworkCodingEngine;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.EncodedFragment;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.MediaResource;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.engine.CodingEngine;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.engine.NetworkCodingEngine;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.EncodedFragment;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.MediaResourceOLD;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.OriginalMediaResource;
-
-import org.hachreak.projects.gfjama.matrix.GFMatrix;
 import org.hachreak.projects.gfjama.matrix.GFMatrixException;
 import org.hachreak.projects.gfjama.matrix.GaloisField;
-import org.hachreak.projects.gfjama.matrix.RandomGFMatrix;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -144,21 +140,35 @@ public class TestNetworkCodingEngine {
 		File f = new File("tests/TestNetworkCodingEngine.txt");
 		int fragmentSize = 10;
 		GaloisField g = new GaloisField((byte) 8);
-		OriginalMediaResource o = new OriginalMediaResource(f, fragmentSize, g);
+		MediaResource o = new MediaResource(f, fragmentSize, g);
+		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
 
 		CodingEngine c = new NetworkCodingEngine(g);
 		try {
+			// encode
 			List<EncodedFragment> fragments = c.encode(o);
+			
+			// get only m fragments
 			List<EncodedFragment> fragmentsToDecode = new ArrayList<EncodedFragment>();
 			for (int i = 1; i <= o.getNumberOfFragments(); i++) {
 				fragmentsToDecode.add(fragments.get(i));
-				// System.out.println(fragments.get(i).getSize());
 			}
-			// System.out.println(fragmentsToDecode.size());
-			List<GFMatrix> l = c.decode(fragmentsToDecode);
-			OriginalMediaResource omr = new OriginalMediaResource(new File(
-					"tests/TestNetworkCodingEngine.decoded.txt"), l.size());
-			omr.save(l);
+
+			// decode
+			char[][] data = c.decode(fragmentsToDecode);
+			
+//			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+//			int size = data[0].length;
+//			for(int i=0; i<data.length; i++){
+//				char[] orig = new char[size];
+//				reader.read(orig);
+//				assertTrue(new String(orig).equals(new String(data[i])));
+//			}
+			
+			// save
+			MediaResource.save(new FileOutputStream(new File(
+					"tests/TestNetworkCodingEngine.decoded.txt")), data); 
+
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

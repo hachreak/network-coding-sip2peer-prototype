@@ -19,6 +19,16 @@
 
 package it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.peer;
 
+import it.unipr.ce.dsg.s2p.org.json.JSONException;
+import it.unipr.ce.dsg.s2p.org.json.JSONObject;
+import it.unipr.ce.dsg.s2p.peer.NeighborPeerDescriptor;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.exceptions.InvalidParamsException;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.exceptions.NoBootstrapConfiguredException;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.exceptions.NotEnoughPeerException;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.msg.FragmentPublishMessage;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.EncodedFragment;
+import it.unipr.ce.dsg.s2p.sip.Address;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,20 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import it.unipr.ce.dsg.s2p.org.json.JSONException;
-import it.unipr.ce.dsg.s2p.org.json.JSONObject;
-import it.unipr.ce.dsg.s2p.peer.NeighborPeerDescriptor;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.exceptions.InvalidParamsException;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.exceptions.NoBootstrapConfiguredException;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.exceptions.NotEnoughPeerException;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.msg.FragmentPublishMessage;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.EncodedFragment;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.EncodedFragmentHeader;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.GenerationSize;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.MediaResourceOLD;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.tmp.GFMatrix;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.tmp.GaloisField;
-import it.unipr.ce.dsg.s2p.sip.Address;
+import org.hachreak.projects.gfjama.matrix.GaloisField;
 
 /**
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>

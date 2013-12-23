@@ -20,14 +20,12 @@
 package it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.engine;
 
 import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.EncodedFragment;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.MediaResourceOLD;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.OriginalMediaResource;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.MediaResource;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import org.hachreak.projects.gfjama.matrix.GFMatrix;
 import org.hachreak.projects.gfjama.matrix.GFMatrixException;
 
 /**
@@ -44,7 +42,7 @@ public interface CodingEngine {
 	 * @throws IOException 
 	 * @throws NoSuchAlgorithmException 
 	 */
-	public List<EncodedFragment> encode(OriginalMediaResource ms) throws NoSuchAlgorithmException, IOException;
+	public List<EncodedFragment> encode(MediaResource ms) throws NoSuchAlgorithmException, IOException;
 	
 	/**
 	 * Rebuild a resource encoded
@@ -53,7 +51,7 @@ public interface CodingEngine {
 	 * @return resource decoded
 	 * @throws GFMatrixException 
 	 */
-	public List<GFMatrix> decode(List<EncodedFragment> fragments) throws GFMatrixException;
+	public char[][] decode(List<EncodedFragment> fragments) throws GFMatrixException;
 	
 	/**
 	 * Set redundancy rate

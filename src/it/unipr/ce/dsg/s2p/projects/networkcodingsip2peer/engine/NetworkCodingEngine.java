@@ -21,8 +21,7 @@ package it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.engine;
 
 import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.EncodedFragment;
 import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.EncodedFragmentHeader;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.OriginalMediaResource;
-import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.OriginalMediaResourcePiece;
+import it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.MediaResource;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -91,7 +90,7 @@ public class NetworkCodingEngine implements CodingEngine {
 	 * (it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.resource.MediaResource
 	 * )
 	 */
-	public List<EncodedFragment> encode(OriginalMediaResource ms) throws NoSuchAlgorithmException, IOException {
+	public List<EncodedFragment> encode(MediaResource ms) throws NoSuchAlgorithmException, IOException {
 		// generate coefficient of matrix G
 		generateGaloisMatrix(ms);
 //G.print();
@@ -110,7 +109,7 @@ public class NetworkCodingEngine implements CodingEngine {
 		ArrayList<EncodedFragment> result = new ArrayList<EncodedFragment>();
 		for (int i = 0; i < ms.getFragmentSize(); i++) {
 			// get l(1xm) matrix
-			GFMatrix l = ms.getPiece(i);
+			GFMatrix l = ms.loadTransposedPiece(i);
 			// s(1xn) = l(1xm)*G(mxn)
 			GFMatrix s = l.times(G);
 
@@ -140,54 +139,8 @@ public class NetworkCodingEngine implements CodingEngine {
 				}
 			}
 		}
-		
-//			// get GF column values
-//			char col[] = G.getColumnCopy(i);
-//
-//			// TODO quale chiave (primo parametro) ha bisogno????
-//			FragmentHeader fh = new FragmentHeader(
-//					FragmentHeader.generateKey(), resKey, col);
-//			char e[] = new char[1];
-//			// ogni frammento e' formato da un solo char
-//			e[0] = s.get(0, i);
-//			Fragment fr = new Fragment(fh, e);
-//			result.add(fr);
-		
-
 		return result;
 	}
-
-	// protected char[] encodeFragment(ArrayList< char[] > fragments,
-	// FragmentHeader header) {
-	//
-	// char gfVector[] = header.getCodingVector();
-	// char fragmentEncoded[] = new char[fragments.get(0).length];
-	//
-	// for (int j = 0; j < fragments.size(); j++) {
-	// char[] a_j = fragments.get(j);
-	// fragmentEncoded = sumEncoded(fragmentEncoded, muxAjGFvector(gfVector[j],
-	// a_j));
-	// }
-	//
-	// return fragmentEncoded;
-	// }
-
-	// protected char[] sumEncoded(char[] base, char[] muxAiGFvector) {
-	// char result[] = new char[muxAiGFvector.length];
-	// for (int i = 0; i < muxAiGFvector.length; i++) {
-	// result[i] = gf.sum(base[i], muxAiGFvector[i]);
-	// }
-	// return result;
-	// }
-	//
-	// protected char[] muxAjGFvector(char gfVector,
-	// char[] a_j) {
-	// char result[] = new char[a_j.length];
-	// for (int i = 0; i < a_j.length; i++) {
-	// result[i] = gf.product(gfVector, a_j[i]);
-	// }
-	// return result;
-	// }
 
 	/*
 	 * (non-Javadoc)
@@ -196,10 +149,11 @@ public class NetworkCodingEngine implements CodingEngine {
 	 * it.unipr.ce.dsg.s2p.projects.networkcodingsip2peer.engine.CodingEngine
 	 * #decode(java.util.List)
 	 */
-	public List<GFMatrix> decode(List<EncodedFragment> fragments) throws GFMatrixException {
+	public char[][] decode(List<EncodedFragment> fragments) throws GFMatrixException {
 		int m = fragments.size();
 		GaloisField gf = fragments.get(0).getHeader().getGaloisField();
-		List<GFMatrix> result = new ArrayList<GFMatrix>();
+//		List<char[]> result = new ArrayList<char[]>();
+		char[][] result = new char[fragments.get(0).getSize()][m];
 		
 		// for each byte of fragment's buffer
 		for(int i=0; i<fragments.get(0).getSize(); i++){
@@ -222,13 +176,14 @@ public class NetworkCodingEngine implements CodingEngine {
 			// Perform reconstruction: I = s*G^-1
 			GFMatrix I = s.times(G_1);
 			I.printChar();
-			result.add(I);
+//			result.add(I.getArray()[0]);
+			result[i] = I.getArray()[0];
 //			System.out.println(I.transpose().getColumnDimension());
 //			System.out.println(I.transpose().getRowDimension());
 //			System.out.println(I.getColumnDimension());
 //			System.out.println(I.getRowDimension());
 		}
-		return result;
+		return new GFMatrix(result, gf).transpose().getArray();
 	}
 
 	public void setRedundancyRate(float rate) {
@@ -240,7 +195,7 @@ public class NetworkCodingEngine implements CodingEngine {
 	 * 
 	 * @param ms
 	 */
-	protected void setOutputNumOfFragments(OriginalMediaResource ms) {
+	protected void setOutputNumOfFragments(MediaResource ms) {
 		outputNumOfFragments = (byte) (Math.round(ms.getNumberOfFragments()
 				* redundancyRate) + 1);
 	}
@@ -250,7 +205,7 @@ public class NetworkCodingEngine implements CodingEngine {
 	 * 
 	 * @param ms
 	 */
-	protected void generateGaloisMatrix(OriginalMediaResource ms) {
+	protected void generateGaloisMatrix(MediaResource ms) {
 		// set n (lenght of a line in GF matrix)
 		setOutputNumOfFragments(ms);
 		// init matrix with random values
