@@ -24,6 +24,7 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -85,20 +86,22 @@ public class TestNetworkCodingEngine {
 
 			// decode
 			char[][] data = c.decode(fragmentsToDecode);
-			
-			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-			int size = data[0].length;
-			//System.out.println(data.length);
-			for(int i=0; i<data.length; i++){
-				char[] orig = new char[size];
-				reader.read(orig);
-				assertTrue(new String(orig).equals(new String(data[i])));
-//				System.out.println("TEST "+i);
-			}
+
+			isEquals(data, f);	
+
+//			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+//			int size = data[0].length;
+//			//System.out.println(data.length);
+//			for(int i=0; i<data.length; i++){
+//				char[] orig = new char[size];
+//				reader.read(orig);
+//				assertTrue(new String(orig).equals(new String(data[i])));
+////				System.out.println("TEST "+i);
+//			}
 			
 			// save
 			MediaResource.save(new FileOutputStream(new File(
-					"tests/TestNetworkCodingEngine.decoded.txt.zip")), data); 
+					"tests/TestNetworkCodingEngine.decoded.txt.zip")), data, f.length()); 
 
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -110,46 +113,12 @@ public class TestNetworkCodingEngine {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// byte b = 8;
-		// ArrayList< char[] > fragments = new ArrayList< char[] >();
-		// char c1[] = "h".toCharArray();
-		// char c2[] = "w".toCharArray();
-		// fragments.add(c1);
-		// fragments.add(c2);
-		//
-		// GaloisField gf = new GaloisField(b);
-		// final MediaResourceOLD m = new MediaResourceOLD(123456, fragments);
-		//
-		// NetworkCodingEngine e = new NetworkCodingEngine(gf){
-		// // public NetworkCodingEngine()
-		// public String toString(){
-		// List<Fragment> fe = encode(m);
-		// for(int i=0; i<fe.size(); i++){
-		// System.out.println(fe.get(i).getBuffer());
-		// }
-		// System.out.println("encoded");
-		// return null;
-		// }
-		// protected void generateGaloisMatrix(MediaResourceOLD ms){
-		// System.out.println("fiillll");
-		// setOutputNumOfFragments(ms);
-		// // System.out.println(outputNumOfFragments);
-		// // System.out.println(ms.getTotalNumberOfFragments());
-		// // System.out.println(ms.getGenerationsAmount());
-		// G = new RandomGFMatrix(ms.getGenerationsAmount(),
-		// outputNumOfFragments, getGaloisField(), 10);
-		// //G.printMatrix();
-		// }
-		// };
-		//
-		// e.toString();
 	}
 	
 	@Test
 	public void testEncode2() {
 		File f = new File("tests/TestNetworkCodingEngineNotMultiple.txt");
-		int fragmentSize = 10000;
+		int fragmentSize = 7001;
 		
 		MediaResource o = new MediaResource(f, fragmentSize, galoisField);
 		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
@@ -168,19 +137,21 @@ public class TestNetworkCodingEngine {
 			// decode
 			char[][] data = c.decode(fragmentsToDecode);
 			
-			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-			int size = data[0].length;
-			//System.out.println(data.length);
-			for(int i=0; i<data.length; i++){
-				char[] orig = new char[size];
-				reader.read(orig);
-				assertTrue(new String(orig).equals(new String(data[i])));
-//				System.out.println("TEST "+i);
-			}
+			isEquals(data, f);	
+
+//			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+//			int size = data[0].length;
+//			//System.out.println(data.length);
+//			for(int i=0; i<data.length; i++){
+//				char[] orig = new char[size];
+//				reader.read(orig);
+//				assertTrue(new String(orig).equals(new String(data[i])));
+////				System.out.println("TEST "+i);
+//			}
 			
 			// save
 			MediaResource.save(new FileOutputStream(new File(
-					"tests/TestNetworkCodingEngineNotMultiple.decoded.txt")), data); 
+					"tests/TestNetworkCodingEngineNotMultiple.decoded.txt")), data, f.length()); 
 
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -192,6 +163,128 @@ public class TestNetworkCodingEngine {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+	
+	@Test
+	public void testEncode3() {
+		File f = new File("tests/TestNetworkCodingEngine.txt");
+		int fragmentSize = 5;
+		
+		MediaResource o = new MediaResource(f, fragmentSize, galoisField);
+		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
+
+		CodingEngine c = new NetworkCodingEngine();//galoisField);
+		try {
+			// encode
+			List<EncodedFragment> fragments = c.encode(o);
+			
+			// get only m fragments
+			List<EncodedFragment> fragmentsToDecode = new ArrayList<EncodedFragment>();
+			for (int i = 1; i <= o.getNumberOfFragments(); i++) {
+				fragmentsToDecode.add(fragments.get(i));
+			}
+
+			// decode
+			char[][] data = c.decode(fragmentsToDecode);
+			
+			// total file length
+			long totalLength = f.length();
+			
+			isEquals(data, f);	
+				//assertTrue(new String(orig).equals(new String(data[i])));
+//				System.out.println("TEST "+i);
+			
+			
+			// save
+			MediaResource.save(new FileOutputStream(new File(
+					"tests/TestNetworkCodingEngine.decoded.txt")), data, totalLength); 
+
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GFMatrixException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testEncode4() {
+		File f = new File("tests/nodequeue-6.x-2.11.tar.gz");
+		int fragmentSize = 45670;
+		
+		MediaResource o = new MediaResource(f, fragmentSize, galoisField);
+		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
+
+		CodingEngine c = new NetworkCodingEngine();//galoisField);
+		try {
+			// encode
+			List<EncodedFragment> fragments = c.encode(o);
+			
+			// get only m fragments
+			List<EncodedFragment> fragmentsToDecode = new ArrayList<EncodedFragment>();
+			for (int i = 1; i <= o.getNumberOfFragments(); i++) {
+				fragmentsToDecode.add(fragments.get(i));
+			}
+
+			// decode
+			char[][] data = c.decode(fragmentsToDecode);
+			
+			// total file length
+			long totalLength = f.length();
+			
+			isEquals(data, f);	
+				//assertTrue(new String(orig).equals(new String(data[i])));
+//				System.out.println("TEST "+i);
+			
+			
+			// save
+			MediaResource.save(new FileOutputStream(new File(
+					"tests/nodequeue-6.x-2.11.tar.decoded.gz")), data, totalLength); 
+
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GFMatrixException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
+	private void isEquals(char[][] data, File originalFile) throws IOException{
+		Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
+		int size = data[0].length;
+		//System.out.println(data.length);
+//		long jndex = 0;
+		for(int i=0; i<(data.length - 1); i++){
+			char[] orig = new char[size];
+			reader.read(orig);
+
+			// System.out.println(new String(data[i]));
+			// System.out.println(new String(orig));
+			// System.out.println("#####");
+				assertTrue(new String(orig).equals(new String(data[i])));
+
+		}
+		
+		long delta = originalFile.length() - (data.length - 1) * data[0].length;
+		char[] orig = new char[(int) delta];
+		reader.read(orig);
+
+		for(int i=0; i<delta; i++){
+//			System.out.println(data[data.length - 1][i]);
+//			System.out.println(orig[i]);
+//			System.out.println("@@@@@");
+			assertTrue(data[data.length - 1][i] == orig[i]);
+		}	
 
 	}
 }

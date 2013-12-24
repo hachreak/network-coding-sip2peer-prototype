@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream.GetField;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -83,7 +84,10 @@ public class MediaResource {
 	 * @return number of fragments
 	 */
 	public int getNumberOfFragments() {
-		return Math.round(file.length() / fragmentSize);
+		long totalLength = file.length();
+		return Math.round( totalLength
+		/ fragmentSize) + (totalLength % fragmentSize != 0 ? 1 : 0);
+//		return Math.round(file.length() / fragmentSize);
 	}
 
 	/**
@@ -121,12 +125,24 @@ public class MediaResource {
 	 * @param data data to write
 	 * @throws IOException
 	 */
-	public static void save(OutputStream ostream, char[][] data)
+	public static void save(OutputStream ostream, char[][] data, long totalLength)
 			throws IOException {
 		Writer w = new BufferedWriter(new OutputStreamWriter(ostream));
 
-		for (int i = 0; i < data.length; i++) {
+		long delta = totalLength - (data.length - 1) * data[0].length;
+		
+		for (int i = 0; i < (data.length - 1); i++) {
 			w.write(data[i]);
+		}
+		
+		if(delta == 0){
+			w.write(data[data.length - 1]);
+		}else{
+//			System.out.println("delta: "+delta);
+			for(int i=0; i<delta; i++){
+//				System.out.println(i+" - "+data[data.length - 1][i]);
+				w.write(data[data.length - 1][i]);
+			}
 		}
 	
 		w.flush();
@@ -144,11 +160,11 @@ public class MediaResource {
 	 * @throws IOException
 	 */
 	public GFMatrix loadTransposedPiece(int index) throws FileNotFoundException, IOException{
-		return MediaResource.loadTransposedPiece(new FileInputStream(file), (int) file.length(), fragmentSize, index, galoisField);
+		return MediaResource.loadTransposedPiece(new FileInputStream(file), getNumberOfFragments(), fragmentSize, index, galoisField);
 	}
 	
 	public static GFMatrix loadTransposedPiece(InputStream istream,
-			int totalLength, int fragmentSize, int index,
+			int numOfFragments, int fragmentSize, int index,
 			GaloisField galoisField) throws IOException {
 		assert index >= fragmentSize : "index >= fragment size";
 
@@ -157,8 +173,7 @@ public class MediaResource {
 																			// FileInputStream(file)));
 
 		// create GFMatrix object
-		GFMatrix m = new GFMatrix(1, (int) Math.round(totalLength
-				/ fragmentSize) /*+ 1*/, galoisField);
+		GFMatrix m = new GFMatrix(1, (int) Math.round(numOfFragments), galoisField);
 
 		// get internal matrix
 		char A[][] = m.getArray();
