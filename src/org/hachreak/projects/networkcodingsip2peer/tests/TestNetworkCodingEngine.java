@@ -145,4 +145,53 @@ public class TestNetworkCodingEngine {
 		//
 		// e.toString();
 	}
+	
+	@Test
+	public void testEncode2() {
+		File f = new File("tests/TestNetworkCodingEngineNotMultiple.txt");
+		int fragmentSize = 10000;
+		
+		MediaResource o = new MediaResource(f, fragmentSize, galoisField);
+		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
+
+		CodingEngine c = new NetworkCodingEngine();//galoisField);
+		try {
+			// encode
+			List<EncodedFragment> fragments = c.encode(o);
+			
+			// get only m fragments
+			List<EncodedFragment> fragmentsToDecode = new ArrayList<EncodedFragment>();
+			for (int i = 10; i < o.getNumberOfFragments() + 10; i++) {
+				fragmentsToDecode.add(fragments.get(i));
+			}
+
+			// decode
+			char[][] data = c.decode(fragmentsToDecode);
+			
+			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+			int size = data[0].length;
+			//System.out.println(data.length);
+			for(int i=0; i<data.length; i++){
+				char[] orig = new char[size];
+				reader.read(orig);
+				assertTrue(new String(orig).equals(new String(data[i])));
+//				System.out.println("TEST "+i);
+			}
+			
+			// save
+			MediaResource.save(new FileOutputStream(new File(
+					"tests/TestNetworkCodingEngineNotMultiple.decoded.txt")), data); 
+
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GFMatrixException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }

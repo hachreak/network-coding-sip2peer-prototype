@@ -35,6 +35,8 @@ import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.swing.JInternalFrame;
+
 import org.hachreak.projects.gfjama.matrix.GFMatrix;
 import org.hachreak.projects.gfjama.matrix.GaloisField;
 import org.zoolu.tools.Random;
@@ -99,7 +101,7 @@ public class MediaResource {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			byte cbuf[] = new byte[fragmentSize];
 			int offset = 0;
-			byte[] dataBytes = new byte[1024];
+			byte[] dataBytes = new byte[fragmentSize];
 			int nread = 0;
 			while ((nread = inputStream.read(cbuf, offset, fragmentSize)) != -1) {
 				md.update(dataBytes, 0, nread);
@@ -148,7 +150,7 @@ public class MediaResource {
 	public static GFMatrix loadTransposedPiece(InputStream istream,
 			int totalLength, int fragmentSize, int index,
 			GaloisField galoisField) throws IOException {
-		assert index > fragmentSize : "index > fragment size";
+		assert index >= fragmentSize : "index >= fragment size";
 
 		// reader of file
 		Reader reader = new BufferedReader(new InputStreamReader(istream));// new
@@ -167,11 +169,16 @@ public class MediaResource {
 		// List<Character> vect = new ArrayList<Character>();
 		int ret = 0;
 		while ((ret = reader.read(cbuf, offset, fragmentSize)) != -1) {
-			// System.out.println(new String(cbuf)+ " - "+ret);
-			if (index < cbuf.length) {
-				A[0][jndex] = cbuf[index];
-				// System.out.print(cbuf[index]);
-			}
+//			 System.out.println(new String(cbuf)+ " - "+ret+" "+fragmentSize);
+			//if (index < cbuf.length) {
+//				System.out.println("index "+index+" jndex "+jndex+
+//						" cbuf.length "+cbuf.length+" A[0].length "+A[0].length);
+				if(jndex < A[0].length)
+					A[0][jndex] = cbuf[index];
+//				else
+//					
+//				System.out.print("jndex > A[0].length");
+			//}
 			// offset += fragmentSize;
 			jndex++;
 		}

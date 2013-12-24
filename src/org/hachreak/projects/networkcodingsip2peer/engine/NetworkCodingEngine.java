@@ -49,7 +49,7 @@ public class NetworkCodingEngine implements CodingEngine {
 	/**
 	 * n - number of fragments in output = m * redundancyRate
 	 */
-	protected byte outputNumOfFragments;
+	protected int outputNumOfFragments;
 
 	/**
 	 * codingMatrix
@@ -72,14 +72,18 @@ public class NetworkCodingEngine implements CodingEngine {
 	 * 
 	 * @param gf
 	 */
-	public NetworkCodingEngine(){
+	public NetworkCodingEngine() {
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.hachreak.projects.networkcodingsip2peer.engine.CodingEngine#encode(org.hachreak.projects.networkcodingsip2peer.resource.MediaResource)
+	 * 
+	 * @see
+	 * org.hachreak.projects.networkcodingsip2peer.engine.CodingEngine#encode
+	 * (org.hachreak.projects.networkcodingsip2peer.resource.MediaResource)
 	 */
-	public List<EncodedFragment> encode(MediaResource ms) throws NoSuchAlgorithmException, IOException {
+	public List<EncodedFragment> encode(MediaResource ms)
+			throws NoSuchAlgorithmException, IOException {
 		// generate coefficient of matrix G
 		generateGaloisMatrix(ms);
 
@@ -106,14 +110,15 @@ public class NetworkCodingEngine implements CodingEngine {
 					// create Fragment Header
 					EncodedFragmentHeader fh = new EncodedFragmentHeader(
 							EncodedFragmentHeader.generateKey(), resKey,
-							G.getColumnCopy(j), ms.getFragmentSize(), ms.getGaloisField());
+							G.getColumnCopy(j), ms.getFragmentSize(),
+							ms.getGaloisField());
 					// create a new fragment
 					f = new EncodedFragment(fh);
 				}
-				
+
 				// add piece of encoded version of resource
 				f.getBuffer()[i] = s.get(0, j);
-				
+
 				// save
 				try {
 					// update
@@ -129,32 +134,42 @@ public class NetworkCodingEngine implements CodingEngine {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.hachreak.projects.networkcodingsip2peer.engine.CodingEngine#decode(java.util.List)
+	 * 
+	 * @see
+	 * org.hachreak.projects.networkcodingsip2peer.engine.CodingEngine#decode
+	 * (java.util.List)
 	 */
-	public char[][] decode(List<EncodedFragment> fragments) throws GFMatrixException {
+	public char[][] decode(List<EncodedFragment> fragments)
+			throws GFMatrixException {
 		int m = fragments.size();
 		GaloisField gf = fragments.get(0).getHeader().getGaloisField();
 
+		// G(mxm)
+		GFMatrix G = new GFMatrix(m, m, gf);
+		// for each fragment of 'm' available
+		for (int j = 0; j < m; j++) {
+			EncodedFragment f = fragments.get(j);
+			// fill G matrix
+			G.getArray()[j] = f.getHeader().getCodingVector();
+		}
+		// traspose G
+		G = G.transpose();
+		// Perform: G inversion (G^-1)
+		GFMatrix G_1 = G.inverse();
+
 		char[][] result = new char[fragments.get(0).getSize()][m];
-		
+
 		// for each byte of fragment's buffer
-		for(int i=0; i<fragments.get(0).getSize(); i++){
+		for (int i = 0; i < fragments.get(0).getSize(); i++) {
 			// s(1xm)
 			GFMatrix s = new GFMatrix(1, m, gf);
-			// G(mxm)
-			GFMatrix G = new GFMatrix(m, m, gf);
+
 			// for each fragment of 'm' available
-			for(int j=0; j<m; j++){
+			for (int j = 0; j < m; j++) {
 				EncodedFragment f = fragments.get(j);
 				// fill s matrix
 				s.getArray()[0][j] = f.getBuffer()[i];
-				// fill G matrix
-				G.getArray()[j] = f.getHeader().getCodingVector();
 			}
-			// traspose G
-			G = G.transpose();
-			// Perform: G inversion (G^-1)
-			GFMatrix G_1 = G.inverse();
 			// Perform reconstruction: I = s*G^-1
 			GFMatrix I = s.times(G_1);
 			// save decoded values
@@ -173,7 +188,7 @@ public class NetworkCodingEngine implements CodingEngine {
 	 * @param ms
 	 */
 	protected void setOutputNumOfFragments(MediaResource ms) {
-		outputNumOfFragments = (byte) (Math.round(ms.getNumberOfFragments()
+		outputNumOfFragments = (Math.round(ms.getNumberOfFragments()
 				* redundancyRate));
 	}
 
