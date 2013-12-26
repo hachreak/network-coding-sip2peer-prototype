@@ -126,10 +126,11 @@ public class MediaResource {
 	 * @param data data to write
 	 * @throws IOException
 	 */
-	public static void save(OutputStream ostream, char[][] data, long totalLength)
+	public static void save(File file, char[][] data, long totalLength)
 			throws IOException {
-		Writer w = new BufferedWriter(new OutputStreamWriter(ostream));
-
+//		Writer w = new BufferedWriter(new OutputStreamWriter(ostream));
+		RandomAccessFile w = new RandomAccessFile(file, "rw");
+		
 //		long delta = totalLength - data.length * (data[0].length - 1);
 //		System.out.println("total length "+totalLength);		
 //		System.out.println("prima "+(data.length * (data[0].length - 1)));
@@ -142,7 +143,8 @@ public class MediaResource {
 		for(long i=0; i<totalLength; i++){
 			j = i % n;
 			k = i / n;
-			
+
+//			if(data[(int) k][(int) j] > 255) System.out.println("errore");
 //			System.out.println((int) k+" "+(int) j);
 			w.write((int)data[(int) k][(int) j]);
 		}
@@ -161,7 +163,7 @@ public class MediaResource {
 ////			}
 //		}
 	
-		w.flush();
+//		w.flush();
 		w.close();
 	}
 

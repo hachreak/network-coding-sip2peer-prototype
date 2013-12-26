@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -91,8 +92,8 @@ public class TestNetworkCodingEngine {
 			isEquals(data, f);	
 		
 			// save
-			MediaResource.save(new FileOutputStream(new File(
-					"tests/TestNetworkCodingEngine.decoded.txt.zip")), data, f.length()); 
+			MediaResource.save(new File(
+					"tests/TestNetworkCodingEngine.decoded.txt.zip"), data, f.length()); 
 
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -131,8 +132,8 @@ public class TestNetworkCodingEngine {
 			isEquals(data, f);	
 
 			// save
-			MediaResource.save(new FileOutputStream(new File(
-					"tests/TestNetworkCodingEngineNotMultiple.decoded.txt")), data, f.length()); 
+			MediaResource.save(new File(
+					"tests/TestNetworkCodingEngineNotMultiple.decoded.txt"), data, f.length()); 
 
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -175,8 +176,8 @@ public class TestNetworkCodingEngine {
 			isEquals(data, f);				
 //			new GFMatrix(data, galoisField).printChar(); 
 			// save
-			MediaResource.save(new FileOutputStream(new File(
-					"tests/TestNetworkCodingEngine.decoded.txt")), data, totalLength); 
+			MediaResource.save(new File(
+					"tests/TestNetworkCodingEngine.decoded.txt"), data, totalLength); 
 
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -220,8 +221,8 @@ public class TestNetworkCodingEngine {
 			isEquals(data, f);	
 			
 			// save
-			MediaResource.save(new FileOutputStream(new File(
-					"tests/nodequeue-6.x-2.11.tar.decoded.gz")), data, totalLength); 
+			MediaResource.save(new File(
+					"tests/nodequeue-6.x-2.11.tar.decoded.gz"), data, totalLength); 
 
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -237,7 +238,9 @@ public class TestNetworkCodingEngine {
 
 	
 	private void isEquals(char[][] data, File originalFile) throws IOException{
-		Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
+//		Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
+		RandomAccessFile reader = new RandomAccessFile(originalFile, "r");
+		
 		int size = data[0].length;
 		//System.out.println(data.length);
 		long jndex = 0;
@@ -259,6 +262,7 @@ public class TestNetworkCodingEngine {
 
 		}
 		
+		reader.close();
 //		long delta = originalFile.length() - (data.length - 1) * data[0].length;
 //		char[] orig = new char[(int) delta];
 //		reader.read(orig);
