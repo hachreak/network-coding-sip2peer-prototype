@@ -59,17 +59,20 @@ public class TestMediaResource {
 		try {
 			int index = 3;
 			fragmentSize = 5;
-			GFMatrix o = MediaResource.loadTransposedPiece(new FileInputStream(
-					file), (int) file.length(), fragmentSize, index,
-					galoisField);
+			MediaResource m = new MediaResource(file, fragmentSize, galoisField);
+			GFMatrix o = m.loadTransposedPiece(index);
+//					new FileInputStream(
+//					file), (int) file.length(), fragmentSize, index,
+//					galoisField);
 			// OriginalMediaResourcePiece o = new MediaResource(file,
 			// fragmentSize, index, galoisField);
-			assertTrue(o.get(0, 0) == 'i');
-			assertTrue(o.get(0, 1) == 'l');
+//			o.printChar();
+			assertTrue(o.get(0, 0) == 'o');
+			assertTrue(o.get(0, 1) == 'r');
 			assertTrue(o.get(0, 2) == 'e');
-			assertTrue(o.get(0, 3) == 'l');
-			assertTrue(o.get(0, 4) == 'd');
-			assertTrue(o.get(0, 5) == 't');
+			assertTrue(o.get(0, 3) == 'm');
+			assertTrue(o.get(0, 4) == ' ');
+//			assertTrue(o.get(0, 5) == 't');
 		} catch (IOException e) {
 			assertTrue(false);
 		}

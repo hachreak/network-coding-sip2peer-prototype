@@ -33,6 +33,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hachreak.projects.gfjama.matrix.GFMatrix;
 import org.hachreak.projects.gfjama.matrix.GFMatrixException;
 import org.hachreak.projects.gfjama.matrix.GaloisField;
 import org.hachreak.projects.networkcodingsip2peer.engine.CodingEngine;
@@ -88,17 +89,7 @@ public class TestNetworkCodingEngine {
 			char[][] data = c.decode(fragmentsToDecode);
 
 			isEquals(data, f);	
-
-//			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-//			int size = data[0].length;
-//			//System.out.println(data.length);
-//			for(int i=0; i<data.length; i++){
-//				char[] orig = new char[size];
-//				reader.read(orig);
-//				assertTrue(new String(orig).equals(new String(data[i])));
-////				System.out.println("TEST "+i);
-//			}
-			
+		
 			// save
 			MediaResource.save(new FileOutputStream(new File(
 					"tests/TestNetworkCodingEngine.decoded.txt.zip")), data, f.length()); 
@@ -139,16 +130,6 @@ public class TestNetworkCodingEngine {
 			
 			isEquals(data, f);	
 
-//			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-//			int size = data[0].length;
-//			//System.out.println(data.length);
-//			for(int i=0; i<data.length; i++){
-//				char[] orig = new char[size];
-//				reader.read(orig);
-//				assertTrue(new String(orig).equals(new String(data[i])));
-////				System.out.println("TEST "+i);
-//			}
-			
 			// save
 			MediaResource.save(new FileOutputStream(new File(
 					"tests/TestNetworkCodingEngineNotMultiple.decoded.txt")), data, f.length()); 
@@ -191,11 +172,8 @@ public class TestNetworkCodingEngine {
 			// total file length
 			long totalLength = f.length();
 			
-			isEquals(data, f);	
-				//assertTrue(new String(orig).equals(new String(data[i])));
-//				System.out.println("TEST "+i);
-			
-			
+			isEquals(data, f);				
+//			new GFMatrix(data, galoisField).printChar(); 
 			// save
 			MediaResource.save(new FileOutputStream(new File(
 					"tests/TestNetworkCodingEngine.decoded.txt")), data, totalLength); 
@@ -218,6 +196,7 @@ public class TestNetworkCodingEngine {
 		int fragmentSize = 45670;
 		
 		MediaResource o = new MediaResource(f, fragmentSize, galoisField);
+		//System.out.println(o.getFragmentSize()+"x"+o.getNumberOfFragments()+" size "+f.length());
 		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
 
 		CodingEngine c = new NetworkCodingEngine();//galoisField);
@@ -233,14 +212,12 @@ public class TestNetworkCodingEngine {
 
 			// decode
 			char[][] data = c.decode(fragmentsToDecode);
-			
+//			System.out.println(data.length+"x"+data[0].length);
+				
 			// total file length
 			long totalLength = f.length();
 			
 			isEquals(data, f);	
-				//assertTrue(new String(orig).equals(new String(data[i])));
-//				System.out.println("TEST "+i);
-			
 			
 			// save
 			MediaResource.save(new FileOutputStream(new File(
@@ -263,28 +240,32 @@ public class TestNetworkCodingEngine {
 		Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
 		int size = data[0].length;
 		//System.out.println(data.length);
-//		long jndex = 0;
-		for(int i=0; i<(data.length - 1); i++){
-			char[] orig = new char[size];
-			reader.read(orig);
+		long jndex = 0;
+		long j,k, n = data[0].length;
+		for(int i=0; i<originalFile.length(); i++){
+//			char[] orig = new char[size];
+			char orig;
+//			reader.read(orig);
+			orig = (char) reader.read();
 
-			// System.out.println(new String(data[i]));
-			// System.out.println(new String(orig));
-			// System.out.println("#####");
-				assertTrue(new String(orig).equals(new String(data[i])));
+			j = i % n;
+			k = i / n;
+			
+			assertTrue(orig == data[(int) k][(int) j]);
+//			 System.out.println(new String(data[i]));
+//			 System.out.println(new String(orig));
+//			 System.out.println("#####");
+//				assertTrue(new String(orig).equals(new String(data[i])));
 
 		}
 		
-		long delta = originalFile.length() - (data.length - 1) * data[0].length;
-		char[] orig = new char[(int) delta];
-		reader.read(orig);
-
-		for(int i=0; i<delta; i++){
-//			System.out.println(data[data.length - 1][i]);
-//			System.out.println(orig[i]);
-//			System.out.println("@@@@@");
-			assertTrue(data[data.length - 1][i] == orig[i]);
-		}	
+//		long delta = originalFile.length() - (data.length - 1) * data[0].length;
+//		char[] orig = new char[(int) delta];
+//		reader.read(orig);
+//
+//		for(int i=0; i<delta; i++){
+//			assertTrue(data[data.length - 1][i] == orig[i]);
+//		}	
 
 	}
 }

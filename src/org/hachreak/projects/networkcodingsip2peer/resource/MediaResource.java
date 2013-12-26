@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream.GetField;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.Writer;
 import java.security.MessageDigest;
@@ -129,21 +130,36 @@ public class MediaResource {
 			throws IOException {
 		Writer w = new BufferedWriter(new OutputStreamWriter(ostream));
 
-		long delta = totalLength - (data.length - 1) * data[0].length;
+//		long delta = totalLength - data.length * (data[0].length - 1);
+//		System.out.println("total length "+totalLength);		
+//		System.out.println("prima "+(data.length * (data[0].length - 1)));
+//		System.out.println("delta: "+delta);
 		
-		for (int i = 0; i < (data.length - 1); i++) {
-			w.write(data[i]);
+		long j = 0;
+		long k = 0;
+//		int m = data.length;
+		int n = data[0].length;
+		for(long i=0; i<totalLength; i++){
+			j = i % n;
+			k = i / n;
+			
+//			System.out.println((int) k+" "+(int) j);
+			w.write((int)data[(int) k][(int) j]);
 		}
-		
-		if(delta == 0){
-			w.write(data[data.length - 1]);
-		}else{
-//			System.out.println("delta: "+delta);
-			for(int i=0; i<delta; i++){
-//				System.out.println(i+" - "+data[data.length - 1][i]);
-				w.write(data[data.length - 1][i]);
-			}
-		}
+//		
+//		for (int i = 0; i < (data.length - 1); i++) {
+//			w.write(data[i]);
+//		}
+//		
+//		if(delta == 0){
+//			w.write(data[data.length - 1]);
+//		}else{
+//			System.out.println("delta: "+delta+ "size "+data[data.length - 2].length);
+////			for(int i=0; i<(int)delta; i++){
+////				System.out.println(i);//+" - "+data[data.length - 1][i]);
+//////				w.write(data[data.length - 1][i]);
+////			}
+//		}
 	
 		w.flush();
 		w.close();
@@ -160,45 +176,69 @@ public class MediaResource {
 	 * @throws IOException
 	 */
 	public GFMatrix loadTransposedPiece(int index) throws FileNotFoundException, IOException{
-		return MediaResource.loadTransposedPiece(new FileInputStream(file), getNumberOfFragments(), fragmentSize, index, galoisField);
-	}
-	
-	public static GFMatrix loadTransposedPiece(InputStream istream,
-			int numOfFragments, int fragmentSize, int index,
-			GaloisField galoisField) throws IOException {
 		assert index >= fragmentSize : "index >= fragment size";
-
-		// reader of file
-		Reader reader = new BufferedReader(new InputStreamReader(istream));// new
-																			// FileInputStream(file)));
+		
+		int n = getNumberOfFragments(); 
+		
+		RandomAccessFile reader = new RandomAccessFile(file, "r");
 
 		// create GFMatrix object
-		GFMatrix m = new GFMatrix(1, (int) Math.round(numOfFragments), galoisField);
+		GFMatrix matrix = new GFMatrix(1, n, galoisField);
 
 		// get internal matrix
-		char A[][] = m.getArray();
+		char A[][] = matrix.getArray();
 
 		// load vector of original data
-		char cbuf[] = new char[fragmentSize];
-		int offset = 0, jndex = 0;
+//		char cbuf[] = new char[fragmentSize];
+//		int offset = 0, jndex = 0;
 		// List<Character> vect = new ArrayList<Character>();
-		int ret = 0;
-		while ((ret = reader.read(cbuf, offset, fragmentSize)) != -1) {
-//			 System.out.println(new String(cbuf)+ " - "+ret+" "+fragmentSize);
-			//if (index < cbuf.length) {
-//				System.out.println("index "+index+" jndex "+jndex+
-//						" cbuf.length "+cbuf.length+" A[0].length "+A[0].length);
-				if(jndex < A[0].length)
-					A[0][jndex] = cbuf[index];
-//				else
-//					
-//				System.out.print("jndex > A[0].length");
-			//}
-			// offset += fragmentSize;
-			jndex++;
+//System.out.println("seek "+index);		
+		reader.seek(index * n);
+		
+		for (int i=0; i<n; i++){
+			A[0][i] = (char)reader.read();
+//			System.out.println((char)reader.read());
 		}
+//		matrix.printChar();
+//		int ret = 0;
+//		while ((ret = reader.read(cbuf, offset, fragmentSize)) != -1) {
+//				if(jndex < A[0].length)
+//					A[0][jndex] = cbuf[index];
+//			jndex++;
+//		}
 
 		reader.close();
-		return m;
+		return matrix;
+
+		//		return MediaResource.loadTransposedPiece(new FileInputStream(file), getNumberOfFragments(), fragmentSize, index, galoisField);
 	}
+	
+//	public static GFMatrix loadTransposedPiece(InputStream istream,
+//			int numOfFragments, int fragmentSize, int index,
+//			GaloisField galoisField) throws IOException {
+//		assert index >= fragmentSize : "index >= fragment size";
+//
+//		// reader of file
+//		BufferedReader reader = new BufferedReader(new InputStreamReader(istream));// new
+//																			// FileInputStream(file)));
+//		// create GFMatrix object
+//		GFMatrix m = new GFMatrix(1, (int) Math.round(numOfFragments), galoisField);
+//
+//		// get internal matrix
+//		char A[][] = m.getArray();
+//
+//		// load vector of original data
+//		char cbuf[] = new char[fragmentSize];
+//		int offset = 0, jndex = 0;
+//		// List<Character> vect = new ArrayList<Character>();
+//		int ret = 0;
+//		while ((ret = reader.read(cbuf, offset, fragmentSize)) != -1) {
+//				if(jndex < A[0].length)
+//					A[0][jndex] = cbuf[index];
+//			jndex++;
+//		}
+//
+//		reader.close();
+//		return m;
+//	}
 }

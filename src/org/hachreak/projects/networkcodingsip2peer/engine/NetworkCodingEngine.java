@@ -175,7 +175,7 @@ public class NetworkCodingEngine implements CodingEngine {
 			// save decoded values
 			result[i] = I.getArray()[0];
 		}
-		return new GFMatrix(result, gf).transpose().getArray();
+		return new GFMatrix(result, gf)/*.transpose()*/.getArray();
 	}
 
 	public void setRedundancyRate(float rate) {
