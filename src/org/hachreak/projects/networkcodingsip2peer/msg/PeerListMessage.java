@@ -24,15 +24,31 @@ import it.unipr.ce.dsg.s2p.message.Payload;
 import it.unipr.ce.dsg.s2p.peer.PeerListManager;
 
 /**
+ * This message include a peer list
+ * 
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
  *
  */
 public class PeerListMessage extends BasicMessage {
 
 	public static final String MSG_PEER_LIST = "peer_list";
+	
+	private String typeOfPeerList = PeerListMessage.MSG_PEER_LIST;
 
 	public PeerListMessage(PeerListManager manager) {
 		super(PeerListMessage.MSG_PEER_LIST, new Payload(manager));
 	}
 
+	public PeerListMessage(String type, PeerListManager manager) {
+		super(PeerListMessage.MSG_PEER_LIST, new Payload(manager));
+		typeOfPeerList = type;
+	}
+	
+	public void setTypeOfPeerList(String type){
+		this.typeOfPeerList = type;
+	}
+	
+	public String getTypeOfPeerList(){
+		return this.typeOfPeerList;
+	}
 }

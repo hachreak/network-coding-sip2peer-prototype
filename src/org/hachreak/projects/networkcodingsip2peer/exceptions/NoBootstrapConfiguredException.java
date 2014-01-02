@@ -25,4 +25,9 @@ package org.hachreak.projects.networkcodingsip2peer.exceptions;
  */
 public class NoBootstrapConfiguredException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4864397613617266653L;
+
 }

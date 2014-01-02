@@ -17,21 +17,27 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.exceptions;
+package org.hachreak.projects.networkcodingsip2peer.msg;
+
+import it.unipr.ce.dsg.s2p.message.BasicMessage;
+import it.unipr.ce.dsg.s2p.message.Payload;
+
+import org.hachreak.projects.networkcodingsip2peer.resource.EncodedFragment;
+import org.hachreak.projects.networkcodingsip2peer.utils.EncapsulatedEncodedFragment;
 
 /**
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
- *
+ * 
  */
-public class InvalidParamsException extends Exception {
+public class EncodedFragmentPublishMessage extends BasicMessage {
+
+	public static final String MSG_FRAGMENT_PUBLISH = "fragment_publish";
 
 	/**
 	 * 
+	 * @param fragment
 	 */
-	private static final long serialVersionUID = 7793918960311288746L;
-
-	public InvalidParamsException(String string) {
-		super(string);
+	public EncodedFragmentPublishMessage(EncodedFragment fragment) {
+		super(MSG_FRAGMENT_PUBLISH, new Payload(EncapsulatedEncodedFragment.encapsulate(fragment)));
 	}
-
 }

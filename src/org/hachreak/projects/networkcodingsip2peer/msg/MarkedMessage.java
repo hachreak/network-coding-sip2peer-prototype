@@ -19,24 +19,28 @@
 
 package org.hachreak.projects.networkcodingsip2peer.msg;
 
-import org.hachreak.projects.networkcodingsip2peer.resource.EncodedFragmentHeader;
-
 import it.unipr.ce.dsg.s2p.message.BasicMessage;
 import it.unipr.ce.dsg.s2p.message.Payload;
+import it.unipr.ce.dsg.s2p.peer.PeerDescriptor;
 
 /**
- * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
- *
+ * It's a message with the peer description of sender's peer
  */
-public class FragmentRequireMessage extends BasicMessage {
+public class MarkedMessage extends BasicMessage {
 	
-	public static final String MSG_FRAGMENT_REQUIRE = "fragment_require";
-	
-	/**
-	 * 
-	 * @param fragment
-	 */
-	public FragmentRequireMessage(EncodedFragmentHeader fragment_header) {
-		super(MSG_FRAGMENT_REQUIRE, new Payload(fragment_header));
+	private PeerDescriptor sender;
+
+	public MarkedMessage(PeerDescriptor sender, String type, Payload payload) {
+		super(type, payload);
+		this.sender = sender;
+//		System.out.println("######\n"+sender+"\n@@@@@");
 	}
+
+	public PeerDescriptor getSender() {
+		return sender;
+	}
+
+//	public static PeerDescriptor decodeJSONPeerDescriptor(JSONObject object) throws JSONException{
+//		return JSONObject2Peer.json2peerdescriptor(object);
+//	}
 }

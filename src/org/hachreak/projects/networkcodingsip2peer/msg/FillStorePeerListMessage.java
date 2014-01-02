@@ -17,12 +17,24 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.actionListener;
+package org.hachreak.projects.networkcodingsip2peer.msg;
+
+import it.unipr.ce.dsg.s2p.peer.PeerDescriptor;
 
 /**
- * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
- *
+ * It's a request to fill his personal Peer List with a indicated number of peers
  */
-public interface FillPeerListListener {
+public class FillStorePeerListMessage extends RefillPeerListMessage {
 
+	public static final String MSG_FILL_STORE_PEER_LIST = "fill_store_peer_list";
+	
+	/**
+	 * 
+	 * @param peerDesc Peer descriptor of peer that require to join
+	 * @param num_peers request this number of peers
+	 */
+	public FillStorePeerListMessage(PeerDescriptor peerDesc, int num_peers) {
+		super(peerDesc, num_peers, FillStorePeerListMessage.MSG_FILL_STORE_PEER_LIST);
+	}
+	
 }

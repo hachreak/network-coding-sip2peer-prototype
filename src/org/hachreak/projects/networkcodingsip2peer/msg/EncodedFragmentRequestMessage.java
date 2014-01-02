@@ -17,21 +17,32 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.exceptions;
+package org.hachreak.projects.networkcodingsip2peer.msg;
+
+import it.unipr.ce.dsg.s2p.message.Payload;
+import it.unipr.ce.dsg.s2p.peer.PeerDescriptor;
 
 /**
+ * It's a request to send a specific fragment
+ * 
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
- *
  */
-public class InvalidParamsException extends Exception {
-
+public class EncodedFragmentRequestMessage extends MarkedMessage {
+	
+	public static final String MSG_FRAGMENT_REQUEST = "fragment_request";
+	private byte[] resourceKey;
+	
 	/**
 	 * 
+	 * @param peerDescriptor 
+	 * @param fragment
 	 */
-	private static final long serialVersionUID = 7793918960311288746L;
-
-	public InvalidParamsException(String string) {
-		super(string);
+	public EncodedFragmentRequestMessage(PeerDescriptor peerDescriptor, byte[] resourceKey) {
+		super(peerDescriptor, MSG_FRAGMENT_REQUEST, new Payload());
+		this.resourceKey = resourceKey;
 	}
-
+	
+	public byte[] getResourceKey(){
+		return resourceKey;
+	}
 }

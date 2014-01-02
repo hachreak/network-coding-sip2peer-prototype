@@ -72,8 +72,8 @@ public class NetworkCodingEngine implements CodingEngine {
 	 * 
 	 * @param gf
 	 */
-	public NetworkCodingEngine() {
-	}
+//	public NetworkCodingEngine() {
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -82,23 +82,23 @@ public class NetworkCodingEngine implements CodingEngine {
 	 * org.hachreak.projects.networkcodingsip2peer.engine.CodingEngine#encode
 	 * (org.hachreak.projects.networkcodingsip2peer.resource.MediaResource)
 	 */
-	public List<EncodedFragment> encode(MediaResource ms)
+	public List<EncodedFragment> encode(MediaResource mediaResource)
 			throws NoSuchAlgorithmException, IOException {
 		// generate coefficient of matrix G
-		generateGaloisMatrix(ms);
+		generateGaloisMatrix(mediaResource);
 
 		// set a resource key
-		byte[] resKey = ms.getResourceKey();
+		byte[] resKey = mediaResource.getResourceKey();
 		// number of fragments in output
 		int n = G.getColumnDimension();
 		// number of fragments in input
-		int m = G.getRowDimension();
+//		int m = G.getRowDimension();
 
 		// create fragments encoded
 		ArrayList<EncodedFragment> result = new ArrayList<EncodedFragment>();
-		for (int i = 0; i < ms.getFragmentSize(); i++) {
+		for (int i = 0; i < mediaResource.getFragmentSize(); i++) {
 			// get l(1xm) matrix
-			GFMatrix l = ms.loadTransposedPiece(i);
+			GFMatrix l = mediaResource.loadTransposedPiece(i);
 			// s(1xn) = l(1xm)*G(mxn)
 			GFMatrix s = l.times(G);
 
@@ -109,9 +109,9 @@ public class NetworkCodingEngine implements CodingEngine {
 				} catch (IndexOutOfBoundsException e) {
 					// create Fragment Header
 					EncodedFragmentHeader fh = new EncodedFragmentHeader(
-							EncodedFragmentHeader.generateKey(), resKey,
-							G.getColumnCopy(j), ms.getFragmentSize(),
-							ms.getGaloisField());
+							j/*EncodedFragmentHeader.generateKey()*/, resKey,
+							G.getColumnCopy(j), mediaResource.getFragmentSize(),
+							mediaResource.getGaloisField());
 					// create a new fragment
 					f = new EncodedFragment(fh);
 				}
@@ -141,7 +141,7 @@ public class NetworkCodingEngine implements CodingEngine {
 	 */
 	public char[][] decode(List<EncodedFragment> fragments)
 			throws GFMatrixException {
-		int m = fragments.size();
+		int m = fragments.get(0).getHeader().getCodingVector().length;//fragments.size();
 		GaloisField gf = fragments.get(0).getHeader().getGaloisField();
 
 		// G(mxm)
@@ -183,25 +183,25 @@ public class NetworkCodingEngine implements CodingEngine {
 	}
 
 	/**
-	 * Set number of fragments in output TODO test it!
+	 * Get number of fragments in output
 	 * 
-	 * @param ms
+	 * @param mediaResource
 	 */
-	protected void setOutputNumOfFragments(MediaResource ms) {
-		outputNumOfFragments = (Math.round(ms.getNumberOfFragments()
+	public int getOutputNumOfFragments(MediaResource mediaResource) {
+		return outputNumOfFragments = (Math.round(mediaResource.getNumberOfFragments()
 				* redundancyRate));
 	}
 
 	/**
 	 * Generate the Galois Matrix (coefficient useful for linear combinations)
 	 * 
-	 * @param ms
+	 * @param mediaResource
 	 */
-	protected void generateGaloisMatrix(MediaResource ms) {
+	protected void generateGaloisMatrix(MediaResource mediaResource) {
 		// set n (lenght of a line in GF matrix)
-		setOutputNumOfFragments(ms);
+		
 		// init matrix with random values
-		G = new RandomGFMatrix(ms.getNumberOfFragments(), outputNumOfFragments,
-				ms.getGaloisField());
+		G = new RandomGFMatrix(mediaResource.getNumberOfFragments(), getOutputNumOfFragments(mediaResource),
+				mediaResource.getGaloisField());
 	}
 }

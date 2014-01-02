@@ -58,4 +58,11 @@ public interface CodingEngine {
 	 * @param rate
 	 */
 	public void setRedundancyRate(float rate);
+	
+	/**
+	 * Get number of fragments in output
+	 * 
+	 * @param ms
+	 */
+	public int getOutputNumOfFragments(MediaResource ms);
 }

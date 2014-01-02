@@ -19,6 +19,10 @@
 
 package org.hachreak.projects.networkcodingsip2peer.utils;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import it.unipr.ce.dsg.s2p.org.json.JSONException;
 import it.unipr.ce.dsg.s2p.org.json.JSONObject;
 import it.unipr.ce.dsg.s2p.peer.PeerDescriptor;
@@ -41,6 +45,23 @@ public class JSONObject2Peer {
 		}
 
 		return neighborPeerDesc;
+	}
+	
+	public static List<PeerDescriptor> json2peerList(JSONObject params) throws JSONException {
+		List<PeerDescriptor> pds = new ArrayList<PeerDescriptor>();
+		// save neighbor peer list
+		Iterator<String> i = params.keys();
+		while (i.hasNext()) {
+			// get key of peer
+			String key = i.next();
+			// rebuild peer descriptor
+			PeerDescriptor pd = JSONObject2Peer.json2peerdescriptor(params
+					.getJSONObject(key));
+			// add the neighbor peer
+//			addNeighborPeer(pd);
+			pds.add(pd);
+		}
+		return pds;
 	}
 
 }

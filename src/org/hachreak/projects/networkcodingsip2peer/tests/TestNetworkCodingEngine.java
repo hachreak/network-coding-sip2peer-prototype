@@ -19,22 +19,15 @@
 
 package org.hachreak.projects.networkcodingsip2peer.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
-import java.io.Reader;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hachreak.projects.gfjama.matrix.GFMatrix;
 import org.hachreak.projects.gfjama.matrix.GFMatrixException;
 import org.hachreak.projects.gfjama.matrix.GaloisField;
 import org.hachreak.projects.networkcodingsip2peer.engine.CodingEngine;
@@ -52,6 +45,7 @@ import org.junit.Test;
 public class TestNetworkCodingEngine {
 	
 	GaloisField galoisField = new GaloisField((byte) 16);
+	private float redundancyRate = 5/2;
 
 	/**
 	 * @throws java.lang.Exception
@@ -75,7 +69,7 @@ public class TestNetworkCodingEngine {
 		MediaResource o = new MediaResource(f, fragmentSize, galoisField);
 		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
 
-		CodingEngine c = new NetworkCodingEngine();//galoisField);
+		CodingEngine c = new NetworkCodingEngine(redundancyRate);//galoisField);
 		try {
 			// encode
 			List<EncodedFragment> fragments = c.encode(o);
@@ -89,7 +83,7 @@ public class TestNetworkCodingEngine {
 			// decode
 			char[][] data = c.decode(fragmentsToDecode);
 
-			isEquals(data, f);	
+			areEquals(data, f);	
 		
 			// save
 			MediaResource.save(new File(
@@ -115,7 +109,7 @@ public class TestNetworkCodingEngine {
 		MediaResource o = new MediaResource(f, fragmentSize, galoisField);
 		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
 
-		CodingEngine c = new NetworkCodingEngine();//galoisField);
+		CodingEngine c = new NetworkCodingEngine(redundancyRate);//galoisField);
 		try {
 			// encode
 			List<EncodedFragment> fragments = c.encode(o);
@@ -129,7 +123,7 @@ public class TestNetworkCodingEngine {
 			// decode
 			char[][] data = c.decode(fragmentsToDecode);
 			
-			isEquals(data, f);	
+			areEquals(data, f);	
 
 			// save
 			MediaResource.save(new File(
@@ -156,7 +150,7 @@ public class TestNetworkCodingEngine {
 		MediaResource o = new MediaResource(f, fragmentSize, galoisField);
 		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
 
-		CodingEngine c = new NetworkCodingEngine();//galoisField);
+		CodingEngine c = new NetworkCodingEngine(redundancyRate);//galoisField);
 		try {
 			// encode
 			List<EncodedFragment> fragments = c.encode(o);
@@ -173,7 +167,7 @@ public class TestNetworkCodingEngine {
 			// total file length
 			long totalLength = f.length();
 			
-			isEquals(data, f);				
+			areEquals(data, f);				
 //			new GFMatrix(data, galoisField).printChar(); 
 			// save
 			MediaResource.save(new File(
@@ -200,7 +194,7 @@ public class TestNetworkCodingEngine {
 		//System.out.println(o.getFragmentSize()+"x"+o.getNumberOfFragments()+" size "+f.length());
 		//MediaResource.loadTransposedPiece(new FileImageInputStream(f), f.length(), fragmentSize, index, galoisField);
 
-		CodingEngine c = new NetworkCodingEngine();//galoisField);
+		CodingEngine c = new NetworkCodingEngine(redundancyRate);//galoisField);
 		try {
 			// encode
 			List<EncodedFragment> fragments = c.encode(o);
@@ -218,7 +212,7 @@ public class TestNetworkCodingEngine {
 			// total file length
 			long totalLength = f.length();
 			
-			isEquals(data, f);	
+			areEquals(data, f);	
 			
 			// save
 			MediaResource.save(new File(
@@ -237,39 +231,20 @@ public class TestNetworkCodingEngine {
 	}
 
 	
-	private void isEquals(char[][] data, File originalFile) throws IOException{
-//		Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
+	private void areEquals(char[][] data, File originalFile) throws IOException{
 		RandomAccessFile reader = new RandomAccessFile(originalFile, "r");
 		
-		int size = data[0].length;
-		//System.out.println(data.length);
-		long jndex = 0;
 		long j,k, n = data[0].length;
 		for(int i=0; i<originalFile.length(); i++){
-//			char[] orig = new char[size];
-			char orig;
-//			reader.read(orig);
-			orig = (char) reader.read();
+			char orig = (char) reader.read();
 
 			j = i % n;
 			k = i / n;
 			
 			assertTrue(orig == data[(int) k][(int) j]);
-//			 System.out.println(new String(data[i]));
-//			 System.out.println(new String(orig));
-//			 System.out.println("#####");
-//				assertTrue(new String(orig).equals(new String(data[i])));
 
 		}
 		
 		reader.close();
-//		long delta = originalFile.length() - (data.length - 1) * data[0].length;
-//		char[] orig = new char[(int) delta];
-//		reader.read(orig);
-//
-//		for(int i=0; i<delta; i++){
-//			assertTrue(data[data.length - 1][i] == orig[i]);
-//		}	
-
 	}
 }

@@ -43,9 +43,9 @@ public class EncodedFragmentHeader {
 
 	private GaloisField galoisField;
 	
-	public EncodedFragmentHeader(int fragmentKey, byte[] fileId, char[] codingVector, int fragmentSize, GaloisField galoisField){//, byte generationTag) {
+	public EncodedFragmentHeader(int fragmentKey, byte[] resourceKey, char[] codingVector, int fragmentSize, GaloisField galoisField){//, byte generationTag) {
 		this.fragmentKey = fragmentKey;
-		this.resourceKey = fileId;
+		this.resourceKey = resourceKey;
 		this.codingVector = codingVector;
 		this.fragmentSize = fragmentSize;
 		this.galoisField = galoisField;

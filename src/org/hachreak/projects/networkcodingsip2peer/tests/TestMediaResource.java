@@ -22,7 +22,6 @@ package org.hachreak.projects.networkcodingsip2peer.tests;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.hachreak.projects.gfjama.matrix.GFMatrix;

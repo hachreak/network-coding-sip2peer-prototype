@@ -17,21 +17,13 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.exceptions;
+package org.hachreak.projects.networkcodingsip2peer.actionListener;
+
+import it.unipr.ce.dsg.s2p.peer.PeerListManager;
 
 /**
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
- *
  */
-public class InvalidParamsException extends Exception {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7793918960311288746L;
-
-	public InvalidParamsException(String string) {
-		super(string);
-	}
-
+public interface FullFillPeerListener {
+	public void action(PeerListManager plm);
 }

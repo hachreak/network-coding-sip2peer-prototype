@@ -28,6 +28,11 @@ public class NotEnoughPeerException extends Exception {
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = 5271956521050246497L;
+
+	/**
+	 * 
+	 */
 	public NotEnoughPeerException() {
 		// TODO Auto-generated constructor stub
 	}

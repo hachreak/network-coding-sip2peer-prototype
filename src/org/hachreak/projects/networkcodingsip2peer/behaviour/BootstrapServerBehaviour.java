@@ -17,21 +17,26 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.exceptions;
+package org.hachreak.projects.networkcodingsip2peer.behaviour;
 
-/**
- * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
- *
- */
-public class InvalidParamsException extends Exception {
+import it.unipr.ce.dsg.s2p.peer.NeighborPeerDescriptor;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7793918960311288746L;
+import org.hachreak.projects.networkcodingsip2peer.peer.SimplePeer;
 
-	public InvalidParamsException(String string) {
-		super(string);
+public class BootstrapServerBehaviour extends FillPeerListServerBehaviour {
+
+	public BootstrapServerBehaviour(SimplePeer peer) {
+		super(peer);
+//		System.out.println("[BootstrapServerBehaviour] init....");
+	}
+
+	@Override
+	protected NeighborPeerDescriptor havePeerDescriptor(
+			NeighborPeerDescriptor neighborPeerDescriptor) {
+//		System.out.println("[BootstrapServerBehaviour] add peer.........");
+		// add the new peer descriptor in the available peer list
+		getPeerList().put(neighborPeerDescriptor.getKey(), neighborPeerDescriptor);
+		return super.havePeerDescriptor(neighborPeerDescriptor);
 	}
 
 }

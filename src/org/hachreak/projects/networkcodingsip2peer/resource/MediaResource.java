@@ -20,28 +20,17 @@
 package org.hachreak.projects.networkcodingsip2peer.resource;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream.GetField;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
-import java.io.Reader;
-import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.swing.JInternalFrame;
-
 import org.hachreak.projects.gfjama.matrix.GFMatrix;
 import org.hachreak.projects.gfjama.matrix.GaloisField;
-import org.zoolu.tools.Random;
 
 /**
  * This class represent a generic resource to encode
@@ -80,17 +69,28 @@ public class MediaResource {
 		return fragmentSize;
 	}
 
+	public int getNumberOfFragments(){
+		return MediaResource.computeNumberOfFragments(file, fragmentSize);
+	}
+	
 	/**
 	 * Get number of fragments in which is divided the resource
 	 * @return number of fragments
 	 */
-	public int getNumberOfFragments() {
+	public static int computeNumberOfFragments(File file, int fragmentSize) {
 		long totalLength = file.length();
 		return Math.round( totalLength
 		/ fragmentSize) + (totalLength % fragmentSize != 0 ? 1 : 0);
 //		return Math.round(file.length() / fragmentSize);
 	}
 
+	public byte[] getResourceKey() throws NoSuchAlgorithmException, IOException {
+		if (digest == null) {
+			digest = MediaResource.computeResourceKey(file);
+		}
+		return digest;
+	}
+	
 	/**
 	 * Return a unique identifier of resource (digest SHA-256)
 	 * 
@@ -98,22 +98,22 @@ public class MediaResource {
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
 	 */
-	public byte[] getResourceKey() throws NoSuchAlgorithmException, IOException {
-		if (digest == null) {
+	public static byte[] computeResourceKey(File file) throws NoSuchAlgorithmException, IOException {
+//		if (digest == null) {
 			InputStream inputStream = new BufferedInputStream(
 					new FileInputStream(file));
 
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			byte cbuf[] = new byte[fragmentSize];
+			byte cbuf[] = new byte[1024];
 			int offset = 0;
-			byte[] dataBytes = new byte[fragmentSize];
+			byte[] dataBytes = new byte[1024];
 			int nread = 0;
-			while ((nread = inputStream.read(cbuf, offset, fragmentSize)) != -1) {
+			while ((nread = inputStream.read(cbuf, offset, 1024)) != -1) {
 				md.update(dataBytes, 0, nread);
 			}
-			digest = md.digest();
+			byte[] digest = md.digest();
 			inputStream.close();
-		}
+//		}
 
 		// TODO da controllare!
 		return digest;

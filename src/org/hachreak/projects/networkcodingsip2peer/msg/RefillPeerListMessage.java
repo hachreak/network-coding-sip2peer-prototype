@@ -19,8 +19,6 @@
 
 package org.hachreak.projects.networkcodingsip2peer.msg;
 
-import org.hachreak.projects.networkcodingsip2peer.resource.EncodedFragment;
-
 import it.unipr.ce.dsg.s2p.message.BasicMessage;
 import it.unipr.ce.dsg.s2p.message.Payload;
 import it.unipr.ce.dsg.s2p.peer.PeerDescriptor;

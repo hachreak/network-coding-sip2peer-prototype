@@ -20,6 +20,7 @@
 package org.hachreak.projects.networkcodingsip2peer.resource;
 
 
+
 /**
  * This class represents a fragment into the system. It stores a EncodedFragmentHeader object, 
  * and the buffer of data encoded
@@ -68,7 +69,7 @@ public class EncodedFragment {
 	public char[] getBuffer() {
 		return buffer;
 	}
-
+//public String getBuf(){return new String(buffer); }
 	/**
 	 * @param buffer the buffer to set
 	 */

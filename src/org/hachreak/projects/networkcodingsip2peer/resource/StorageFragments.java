@@ -17,21 +17,17 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.exceptions;
+package org.hachreak.projects.networkcodingsip2peer.resource;
+
+import java.util.List;
 
 /**
- * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
- *
+ * Generic Storage Engine for fragments
+ * 
  */
-public class InvalidParamsException extends Exception {
+public interface StorageFragments {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7793918960311288746L;
-
-	public InvalidParamsException(String string) {
-		super(string);
-	}
-
+	public void put(EncodedFragment fragment);
+	public EncodedFragment get(byte[] resourceKey);
+	public List<EncodedFragment> getAll(byte[] resourceKey);
 }

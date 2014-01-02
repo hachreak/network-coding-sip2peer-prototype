@@ -19,25 +19,26 @@
 
 package org.hachreak.projects.networkcodingsip2peer.msg;
 
-import org.hachreak.projects.networkcodingsip2peer.resource.EncodedFragment;
-
 import it.unipr.ce.dsg.s2p.message.BasicMessage;
 import it.unipr.ce.dsg.s2p.message.Payload;
 
+import org.hachreak.projects.networkcodingsip2peer.resource.EncodedFragment;
+import org.hachreak.projects.networkcodingsip2peer.utils.EncapsulatedEncodedFragment;
+
 /**
+ * It's a response of a Fragment Request 
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
  *
  */
-public class FragmentPublishMessage extends BasicMessage {
+public class EncodedFragmentResponseMessage extends BasicMessage {
 
-	public static final String MSG_FRAGMENT_PUBLISH = "fragment_publish";
+	public static final String MSG_FRAGMENT_RESPONSE = "fragment_response";
 	
 	/**
 	 * 
 	 * @param fragment
 	 */
-	public FragmentPublishMessage(EncodedFragment fragment) {
-		super(MSG_FRAGMENT_PUBLISH, new Payload(fragment));
+	public EncodedFragmentResponseMessage(EncodedFragment fragment) {
+		super(MSG_FRAGMENT_RESPONSE, new Payload(EncapsulatedEncodedFragment.encapsulate(fragment)));
 	}
-
 }

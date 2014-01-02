@@ -30,19 +30,20 @@ import it.unipr.ce.dsg.s2p.sip.Address;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.hachreak.projects.networkcodingsip2peer.actionListener.FillPeerListListener;
+import org.hachreak.projects.networkcodingsip2peer.actionListener.FullFillPeerListener;
+import org.hachreak.projects.networkcodingsip2peer.behaviour.Behaviour;
+import org.hachreak.projects.networkcodingsip2peer.behaviour.BootstrapClientBehaviour;
 import org.hachreak.projects.networkcodingsip2peer.exceptions.NoBootstrapConfiguredException;
 import org.hachreak.projects.networkcodingsip2peer.exceptions.NotEnoughPeerException;
-import org.hachreak.projects.networkcodingsip2peer.msg.JoinMessage;
-import org.hachreak.projects.networkcodingsip2peer.msg.PeerListMessage;
 import org.hachreak.projects.networkcodingsip2peer.msg.RefillPeerListMessage;
-import org.hachreak.projects.networkcodingsip2peer.utils.JSONObject2Peer;
 
 /**
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
@@ -54,17 +55,19 @@ public class SimplePeer extends Peer {
 	 * Number of peer to request at least
 	 */
 	private static final String REQ_NPEER_DEFAULT = "10";
+	
 	public static final String REQ_NPEER = "req_npeer";
 	public static final String BOOTSTRAP_PEER = "bootstrap_peer";
 
-	private Address bootstrapPeer = null;
+	private NeighborPeerDescriptor bootstrapPeer = null;
 
-//	private List<FillPeerListListener> fillPeerListListener = new ArrayList<FillPeerListListener>();
-	
+	private Map<String, Behaviour> behaviours = new HashMap<String, Behaviour>();
+
 	/**
 	 * configuration's file
 	 */
 	protected Properties configFile = new java.util.Properties();
+	private String pathConfig;
 
 	/**
 	 * Create a new peer and join the network
@@ -76,23 +79,32 @@ public class SimplePeer extends Peer {
 	 * @throws IOException
 	 * @throws NoBootstrapConfiguredException
 	 */
-	public SimplePeer(String pathConfig, String key) throws IOException,
-			NoBootstrapConfiguredException {
+	public SimplePeer(String pathConfig, String key) throws IOException {
 		super(pathConfig, key);
 
 		// init peer
 		init(pathConfig);
 	}
 
-	private void init(String pathConfig) throws IOException,
-			NoBootstrapConfiguredException {
-		InputStream i = new FileInputStream(pathConfig);// this.getClass().getClassLoader().
+	public SimplePeer(String pathConfig, String key, String peerName,
+			int peerPort) throws IOException {
+		super(pathConfig, key, peerName, peerPort);
+
+		init(pathConfig);
+	}
+
+	private void init(String pathConfig) throws IOException {
+		InputStream i = new FileInputStream(pathConfig);
 
 		// load peer configuration
 		configFile.load(i);
 
-		// join bootstrap peer
-		joinBootstrapPeer();
+		// save pathConfig
+		this.pathConfig = pathConfig;
+	}
+
+	public String getPathConfig() {
+		return pathConfig;
 	}
 
 	/**
@@ -101,7 +113,8 @@ public class SimplePeer extends Peer {
 	 * @return
 	 * @throws NoBootstrapConfiguredException
 	 */
-	public Address getBootstrapPeer() throws NoBootstrapConfiguredException {
+	public NeighborPeerDescriptor getBootstrapPeer()
+			throws NoBootstrapConfiguredException {
 		if (bootstrapPeer == null) {
 			// get bootstrap address from configuration
 			String bootstrapPeerName = configFile.getProperty(BOOTSTRAP_PEER);
@@ -111,7 +124,10 @@ public class SimplePeer extends Peer {
 				throw new NoBootstrapConfiguredException();
 			}
 
-			bootstrapPeer = new Address(bootstrapPeerName);
+			String random = "bootstrap"+String.valueOf((int )(Math.random() * 10000 + 1));
+			
+			bootstrapPeer = new NeighborPeerDescriptor(new PeerDescriptor(
+					random, bootstrapPeerName, random));
 		}
 
 		return bootstrapPeer;
@@ -122,13 +138,98 @@ public class SimplePeer extends Peer {
 	 * 
 	 * @throws NoBootstrapConfiguredException
 	 */
-	private void joinBootstrapPeer() throws NoBootstrapConfiguredException {
-		// join msg
-		JoinMessage newJoinMsg = new JoinMessage(peerDescriptor,
-				Integer.parseInt(configFile.getProperty(REQ_NPEER,
-						REQ_NPEER_DEFAULT)));
-		// send join message
-		send(getBootstrapPeer(), newJoinMsg);
+	public void joinBootstrapPeer(FullFillPeerListener listener) throws NoBootstrapConfiguredException {
+		int peerRequired = Integer.parseInt(configFile.getProperty(REQ_NPEER,
+				REQ_NPEER_DEFAULT));
+		System.out.println("peer richiesti "+peerRequired);
+//		final String name = this.getPeerDescriptor().getName();
+		BootstrapClientBehaviour bcb = new BootstrapClientBehaviour(this, peerRequired);
+		bcb.addFullFillPeerListener(listener);
+		
+		Thread thread = new Thread(bcb);
+		thread.run();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.unipr.ce.dsg.s2p.peer.Peer#onReceivedJSONMsg(it.unipr.ce.dsg.s2p.org
+	 * .json.JSONObject, it.unipr.ce.dsg.s2p.sip.Address)
+	 */
+	@Override
+	protected void onReceivedJSONMsg(JSONObject jsonMsg, Address sender) {
+		// TODO Auto-generated method stub
+		try {
+			// System.out.println("[SimplePeer] msg arrivato: "+jsonMsg.get("type"));
+
+			// get params from the payload
+			JSONObject params = jsonMsg.getJSONObject("payload").getJSONObject(
+					"params");
+			// get type of message
+			String type = (String) jsonMsg.get("type");
+
+			// execute any associated behaviour
+			execBehaviours(type, jsonMsg);
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Execute each beaviours
+	 * 
+	 * @param type
+	 * @param jsonMsg
+	 */
+	private void execBehaviours(String type, JSONObject jsonMsg) {
+		Iterator<Entry<String, Behaviour>> i = behaviours.entrySet().iterator();
+		while (i.hasNext()) {
+			i.next().getValue().onReceivedJSONMsg(type, jsonMsg);
+		}
+	}
+
+	public PeerListManager getPeerList() {
+		return peerList;
+	}
+
+	public PeerDescriptor getPeerDescriptor() {
+		return peerDescriptor;
+	}
+
+	public Map<String, Behaviour> getBehaviours() {
+		return behaviours;
+	}
+
+	/**
+	 * Add a Neighbor Peer List
+	 * 
+	 * @param peerDescriptorList
+	 */
+	public void addNeighborPeerList(List<PeerDescriptor> peerDescriptorList) {
+		Iterator<PeerDescriptor> i = peerDescriptorList.iterator();
+		while (i.hasNext()) {
+			addNeighborPeer(i.next());
+		}
+	}
+
+	/**
+	 * Add to a existing Peer List Manager a list of Peer
+	 * 
+	 * @param plm
+	 *            Peer List where put each peer
+	 * @param peerDescriptorList
+	 *            source peer list
+	 */
+	public static void addNeighborPeerList(PeerListManager plm,
+			List<PeerDescriptor> peerDescriptorList) {
+		Iterator<PeerDescriptor> i = peerDescriptorList.iterator();
+		while (i.hasNext()) {
+			NeighborPeerDescriptor neighborPD = new NeighborPeerDescriptor(
+					i.next());
+			plm.put(neighborPD.getKey(), neighborPD);
+		}
 	}
 
 	@Override
@@ -143,98 +244,15 @@ public class SimplePeer extends Peer {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.unipr.ce.dsg.s2p.peer.Peer#onReceivedJSONMsg(it.unipr.ce.dsg.s2p.org
-	 * .json.JSONObject, it.unipr.ce.dsg.s2p.sip.Address)
-	 */
-	@Override
-	protected void onReceivedJSONMsg(JSONObject jsonMsg, Address sender) {
-		// TODO Auto-generated method stub
-		try {
-			// System.out.println("msg arrivato: "+jsonMsg.get("type"));
-
-			// get params from the payload
-			JSONObject params = jsonMsg.getJSONObject("payload").getJSONObject(
-					"params");
-			// get type of message
-			String type = (String) jsonMsg.get("type");
-
-			// if I request the peer list
-			if (type.equals(PeerListMessage.MSG_PEER_LIST)) {
-				loadPeerList(params);
-				// System.out.println("[PEER LIST] "+this.peerList.size());
-			}else if(type.equals(RefillPeerListMessage.MSG_REFILL_PEER_LIST)){
-				loadPeerList(params);
-			}
-
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// super.onReceivedJSONMsg(jsonMsg, sender);
-	}
-
-	protected void loadPeerList(JSONObject params) throws JSONException {
-		// save neighbor peer list
-		Iterator<String> i = params.keys();
-		while (i.hasNext()) {
-			// get key of peer
-			String key = i.next();
-			// rebuild peer descriptor
-			PeerDescriptor pd = JSONObject2Peer.json2peerdescriptor(params
-					.getJSONObject(key));
-			// add the neighbor peer
-			addNeighborPeer(pd);
-			// System.out.println(this.getAddress() + "\nadd neighbot: "+pd);
-		}
-	//	System.out.println(peerList);
-	}
-
 	/**
-	 * Return "num" peers from the neighbor peer list
+	 * Get a property
 	 * 
-	 * @param num
-	 *            how many peers
-	 * @return
-	 * @throws NotEnoughPeerException
+	 * @param name
+	 *            name of property
+	 * @return property value
 	 */
-	protected Collection<NeighborPeerDescriptor> getRandomPeers(int num)
-			/*throws NotEnoughPeerException*/ {
-		if (peerList.size() < num) {
-			//throw new NotEnoughPeerException();
-			// if isn't enough, return all
-			return peerList.values();
-		}
-
-		return peerList.getRandomPeers(num).values();
+	public String getProperty(String name) {
+		return configFile.getProperty(name);
 	}
 
-	/**
-	 * Refill the peer list to obtain at least REQ_NPEER peers
-	 * 
-	 * @throws NoBootstrapConfiguredException
-	 */
-	public void refillPeerList() throws NoBootstrapConfiguredException {
-		// compute the number of peers to request
-		int num_peer = Integer.parseInt(configFile.getProperty(REQ_NPEER,
-				REQ_NPEER_DEFAULT)) - peerList.size();
-		
-		// if the peer list isn't full
-		if (num_peer > 0) {
-			// refill msg
-			RefillPeerListMessage rplm = new RefillPeerListMessage(peerDescriptor, num_peer);
-			// send join message
-			send(getBootstrapPeer(), rplm);
-		}
-		// TODO if I have more peers than required? (num_peer < 0)
-	}
-
-	public PeerListManager getPeerList() {
-		return peerList;
-	}
-	
-	
 }

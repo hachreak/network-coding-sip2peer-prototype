@@ -17,26 +17,33 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.msg;
+package org.hachreak.projects.networkcodingsip2peer.resource;
 
-import it.unipr.ce.dsg.s2p.peer.PeerDescriptor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- * It's a request to join a network
- * 
- * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
- */
-public class JoinMessage extends RefillPeerListMessage {
+public class MapUniqueFragmentStorageFragments implements StorageFragments {
 
-	public static final String MSG_PEER_JOIN = "peer_join";
+	private Map<String, EncodedFragment> fragments = new HashMap<String, EncodedFragment>();
 	
-	/**
-	 * 
-	 * @param peerDesc Peer descriptor of peer that require to join
-	 * @param num_peers request this number of peers
-	 */
-	public JoinMessage(PeerDescriptor peerDesc, int num_peers) {
-		super(peerDesc, num_peers, JoinMessage.MSG_PEER_JOIN);
+	public MapUniqueFragmentStorageFragments() {
+		// TODO Auto-generated constructor stub
 	}
-	
+
+	public void put(EncodedFragment fragment) {
+		fragments.put(new String(fragment.getHeader().getResourceKey()), fragment);
+	}
+
+	public EncodedFragment get(byte[] resourceKey) {
+		return fragments.get(new String(resourceKey));
+	}
+
+	public List<EncodedFragment> getAll(byte[] resourceKey) {
+		ArrayList<EncodedFragment> l = new ArrayList<EncodedFragment>();
+		l.add(get(resourceKey));
+		return l;
+	}
+
 }
