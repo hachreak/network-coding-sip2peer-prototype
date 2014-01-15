@@ -17,26 +17,27 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.behaviour;
+package org.hachreak.projects.networkcodingsip2peer.behavior;
 
-import it.unipr.ce.dsg.s2p.peer.NeighborPeerDescriptor;
+import it.unipr.ce.dsg.s2p.org.json.JSONObject;
 
 import org.hachreak.projects.networkcodingsip2peer.peer.SimplePeer;
 
-public class BootstrapServerBehaviour extends FillPeerListServerBehaviour {
-
-	public BootstrapServerBehaviour(SimplePeer peer) {
-		super(peer);
-//		System.out.println("[BootstrapServerBehaviour] init....");
+/**
+ * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
+ * 
+ */
+public abstract class Behavior implements Runnable{
+	private SimplePeer peer;
+	
+	public Behavior(SimplePeer peer){
+		this.peer = peer;
+		peer.getBehaviours().put(this.getClass().toString(), this);
+	}
+	
+	public SimplePeer getPeer() {
+		return peer;
 	}
 
-	@Override
-	protected NeighborPeerDescriptor havePeerDescriptor(
-			NeighborPeerDescriptor neighborPeerDescriptor) {
-//		System.out.println("[BootstrapServerBehaviour] add peer.........");
-		// add the new peer descriptor in the available peer list
-		getPeerList().put(neighborPeerDescriptor.getKey(), neighborPeerDescriptor);
-		return super.havePeerDescriptor(neighborPeerDescriptor);
-	}
-
+	public abstract void onReceivedJSONMsg(String type, JSONObject jsonMsg);
 }

@@ -106,15 +106,16 @@ public class MediaResource {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			byte cbuf[] = new byte[1024];
 			int offset = 0;
-			byte[] dataBytes = new byte[1024];
+//			byte[] dataBytes = new byte[1024];
 			int nread = 0;
 			while ((nread = inputStream.read(cbuf, offset, 1024)) != -1) {
-				md.update(dataBytes, 0, nread);
+				md.update(cbuf, 0, nread);
 			}
 			byte[] digest = md.digest();
 			inputStream.close();
 //		}
-
+//			System.out.print("Set resource key: ");for(int i=0; i<digest.length; i++){ System.out.print(digest[i]+ " "); }System.out.println();
+			
 		// TODO da controllare!
 		return digest;
 	}
@@ -170,7 +171,7 @@ public class MediaResource {
 	/**
 	 * Load a piece of resource:
 	 *   for each piece a_i it get the "index"th byte
-	 *   e.g: [a_i0, a_i1, a_i2, ... , a_ij]
+	 *   e.g: [a_i(0), a_i(1), a_i(2), ... , a_i(j)]
 	 *   
 	 * @param index identify each "index"th byte of a fragment 
 	 * @return Matrix 1xm

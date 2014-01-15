@@ -22,6 +22,7 @@ package org.hachreak.projects.networkcodingsip2peer.engine;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hachreak.projects.gfjama.matrix.GFMatrix;
@@ -109,7 +110,7 @@ public class NetworkCodingEngine implements CodingEngine {
 				} catch (IndexOutOfBoundsException e) {
 					// create Fragment Header
 					EncodedFragmentHeader fh = new EncodedFragmentHeader(
-							j/*EncodedFragmentHeader.generateKey()*/, resKey,
+							resKey,
 							G.getColumnCopy(j), mediaResource.getFragmentSize(),
 							mediaResource.getGaloisField());
 					// create a new fragment
@@ -129,6 +130,14 @@ public class NetworkCodingEngine implements CodingEngine {
 				}
 			}
 		}
+		
+		// compute fragments key
+		Iterator<EncodedFragment> i = result.iterator();
+		while(i.hasNext()){
+			EncodedFragment f = i.next();
+			f.getHeader().setFragmentKey(EncodedFragmentHeader.computeFragmentKey(f));
+		}
+		
 		return result;
 	}
 

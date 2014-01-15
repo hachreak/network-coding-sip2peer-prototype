@@ -17,7 +17,7 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.behaviour;
+package org.hachreak.projects.networkcodingsip2peer.behavior;
 
 import it.unipr.ce.dsg.s2p.org.json.JSONException;
 import it.unipr.ce.dsg.s2p.org.json.JSONObject;
@@ -36,11 +36,11 @@ import org.hachreak.projects.networkcodingsip2peer.utils.JSONObject2Peer;
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
  * 
  */
-public class FillPeerListServerBehaviour extends Behaviour {
+public class FillPeerListServerBehavior extends Behavior {
 
 	private PeerListManager peerList;
 
-	public FillPeerListServerBehaviour(SimplePeer peer) {
+	public FillPeerListServerBehavior(SimplePeer peer) {
 		super(peer);
 
 		peerList = peer.getPeerList();
@@ -51,6 +51,7 @@ public class FillPeerListServerBehaviour extends Behaviour {
 	}
 
 	public void onReceivedJSONMsg(String type, JSONObject jsonMsg) {
+//		System.out.println("[FillPeerServer] msg type "+type);
 		try {
 			JSONObject params = jsonMsg.getJSONObject("payload").getJSONObject(
 					"params");

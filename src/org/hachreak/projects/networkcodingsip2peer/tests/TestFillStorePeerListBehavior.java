@@ -29,9 +29,9 @@ import java.util.List;
 
 import org.hachreak.projects.gfjama.matrix.GaloisField;
 import org.hachreak.projects.networkcodingsip2peer.actionListener.FullFillPeerListener;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.Behaviour;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.FillPeerListServerBehaviour;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.FillStorePeerListClientBehaviour;
+import org.hachreak.projects.networkcodingsip2peer.behavior.Behavior;
+import org.hachreak.projects.networkcodingsip2peer.behavior.FillPeerListServerBehavior;
+import org.hachreak.projects.networkcodingsip2peer.behavior.FillStorePeerListClientBehavior;
 import org.hachreak.projects.networkcodingsip2peer.engine.CodingEngine;
 import org.hachreak.projects.networkcodingsip2peer.engine.NetworkCodingEngine;
 import org.hachreak.projects.networkcodingsip2peer.peer.BootstrapPeer;
@@ -42,7 +42,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestFillStorePeerListBehaviour {
+public class TestFillStorePeerListBehavior {
 
 //	private int numberOfClients = 100;
 //	private List<SimplePeer> peers = new ArrayList<SimplePeer>();
@@ -89,11 +89,11 @@ public class TestFillStorePeerListBehaviour {
 
 		System.out.println("[TestFillStorePeerList] peer list size required = "+outputNumOfFragments);
 		
-		List<Behaviour> l = new ArrayList<Behaviour>(
+		List<Behavior> l = new ArrayList<Behavior>(
 				numberOfClients);
 		
 		toFill = null;
-		FillStorePeerListClientBehaviour fsplcb = new FillStorePeerListClientBehaviour(peers.get(0), peers.get(0).getPeerList(), outputNumOfFragments);
+		FillStorePeerListClientBehavior fsplcb = new FillStorePeerListClientBehavior(peers.get(0), peers.get(0).getPeerList(), outputNumOfFragments);
 		fsplcb.addFullFillPeerListener(new FullFillPeerListener() {
 			
 			public void action(PeerListManager plm) {
@@ -106,7 +106,7 @@ public class TestFillStorePeerListBehaviour {
 		
 		for (int i = 1; i < numberOfClients; i++) {
 			// peers.get(i);
-			l.add(new FillPeerListServerBehaviour(peers.get(i)));// , file);
+			l.add(new FillPeerListServerBehavior(peers.get(i)));// , file);
 			// System.out.println("Init Coding Engine Behaviour "+i);
 		}
 

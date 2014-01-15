@@ -17,9 +17,8 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.behaviour;
+package org.hachreak.projects.networkcodingsip2peer.behavior;
 
-import it.unipr.ce.dsg.s2p.org.json.JSONException;
 import it.unipr.ce.dsg.s2p.org.json.JSONObject;
 import it.unipr.ce.dsg.s2p.peer.NeighborPeerDescriptor;
 import it.unipr.ce.dsg.s2p.peer.PeerListManager;
@@ -38,13 +37,11 @@ import org.hachreak.projects.gfjama.matrix.GaloisField;
 import org.hachreak.projects.networkcodingsip2peer.engine.CodingEngine;
 import org.hachreak.projects.networkcodingsip2peer.engine.NetworkCodingEngine;
 import org.hachreak.projects.networkcodingsip2peer.msg.EncodedFragmentPublishMessage;
-import org.hachreak.projects.networkcodingsip2peer.msg.EncodedFragmentResponseMessage;
 import org.hachreak.projects.networkcodingsip2peer.peer.SimplePeer;
 import org.hachreak.projects.networkcodingsip2peer.resource.EncodedFragment;
 import org.hachreak.projects.networkcodingsip2peer.resource.MediaResource;
-import org.hachreak.projects.networkcodingsip2peer.utils.EncapsulatedEncodedFragment;
 
-public class PublishEncodedFileClientBehaviour extends Behaviour {
+public class PublishEncodedFileClientBehavior extends Behavior {
 
 	public static final String GF_N = "GF_n";
 	public static final String REDUNDANCY_RATE = "redundancyRate";
@@ -71,7 +68,7 @@ public class PublishEncodedFileClientBehaviour extends Behaviour {
 
 	private List<EncodedFragment> fragmentsRetrieved = new ArrayList<EncodedFragment>();
 
-	public PublishEncodedFileClientBehaviour(SimplePeer peer,
+	public PublishEncodedFileClientBehavior(SimplePeer peer,
 			PeerListManager storePeerListManager, File file) throws IOException {
 		super(peer);
 		initPeerConfig(peer);
@@ -108,21 +105,21 @@ public class PublishEncodedFileClientBehaviour extends Behaviour {
 	}
 
 	public void onReceivedJSONMsg(String type, JSONObject jsonMsg) {
-		try {
-			JSONObject params = jsonMsg.getJSONObject("payload").getJSONObject(
-					"params");
-
-			if (type.equals(EncodedFragmentResponseMessage.MSG_FRAGMENT_RESPONSE)) {
-
-				// returned a fragment required
-				fragmentsRetrieved.add(EncapsulatedEncodedFragment
-						.decodeJSONFragment(params));
-
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			JSONObject params = jsonMsg.getJSONObject("payload").getJSONObject(
+//					"params");
+//
+//			if (type.equals(EncodedFragmentResponseMessage.MSG_FRAGMENT_RESPONSE)) {
+//
+//				// returned a fragment required
+//				fragmentsRetrieved.add(EncapsulatedEncodedFragment
+//						.decodeJSONFragment(params));
+//
+//			}
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	/**

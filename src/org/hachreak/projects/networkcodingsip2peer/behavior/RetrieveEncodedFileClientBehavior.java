@@ -17,7 +17,7 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.behaviour;
+package org.hachreak.projects.networkcodingsip2peer.behavior;
 
 import it.unipr.ce.dsg.s2p.org.json.JSONException;
 import it.unipr.ce.dsg.s2p.org.json.JSONObject;
@@ -25,9 +25,7 @@ import it.unipr.ce.dsg.s2p.peer.NeighborPeerDescriptor;
 import it.unipr.ce.dsg.s2p.peer.PeerListManager;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -36,11 +34,10 @@ import java.util.Properties;
 import org.hachreak.projects.networkcodingsip2peer.msg.EncodedFragmentRequestMessage;
 import org.hachreak.projects.networkcodingsip2peer.msg.EncodedFragmentResponseMessage;
 import org.hachreak.projects.networkcodingsip2peer.peer.SimplePeer;
-import org.hachreak.projects.networkcodingsip2peer.resource.MediaResource;
 import org.hachreak.projects.networkcodingsip2peer.resource.StorageFragments;
 import org.hachreak.projects.networkcodingsip2peer.utils.EncapsulatedEncodedFragment;
 
-public class RetrieveEncodedFileClientBehaviour extends Behaviour {
+public class RetrieveEncodedFileClientBehavior extends Behavior {
 
 	private PeerListManager storePeerListManager;
 	private File file;
@@ -49,14 +46,17 @@ public class RetrieveEncodedFileClientBehaviour extends Behaviour {
 	private Properties configFile = new java.util.Properties();
 
 	public static final String FRAGMENT_SIZE = "fragmentSize";
-	private int fragmentSize = 10000;
+//	private int fragmentSize = 10000;
 	private StorageFragments storage;
+	private byte[] resourceKey;
+	private int numOfFragments;
 
-	public RetrieveEncodedFileClientBehaviour(SimplePeer peer,
-			PeerListManager storePeerListManager, File file, StorageFragments storage) throws IOException {
+	public RetrieveEncodedFileClientBehavior(SimplePeer peer,
+			PeerListManager storePeerListManager, byte[] resourceKey, int numOfFragments, StorageFragments storage) throws IOException {
 		super(peer);
 		this.storePeerListManager = storePeerListManager;
-		this.file = file;
+		this.resourceKey = resourceKey;
+		this.numOfFragments = numOfFragments;
 //		this.peer = peer;
 //		this.peer.getBehaviours().add(this);
 		this.storage = storage;
@@ -64,14 +64,14 @@ public class RetrieveEncodedFileClientBehaviour extends Behaviour {
 	}
 
 	private void initFromConfigFile() throws IOException {
-		InputStream i = new FileInputStream(getPeer().getPathConfig());
-
-		// peer configuration
-		configFile.load(i);
-
-		if (configFile.containsKey(FRAGMENT_SIZE))
-			fragmentSize = Integer.parseInt(configFile
-					.getProperty(FRAGMENT_SIZE));
+//		InputStream i = new FileInputStream(getPeer().getPathConfig());
+//
+//		// peer configuration
+//		configFile.load(i);
+//
+////		if (configFile.containsKey(FRAGMENT_SIZE))
+////			fragmentSize = Integer.parseInt(configFile
+////					.getProperty(FRAGMENT_SIZE));
 
 	}
 
@@ -89,12 +89,12 @@ public class RetrieveEncodedFileClientBehaviour extends Behaviour {
 	
 
 	private void retrieveEncodedFragments() throws NoSuchAlgorithmException, IOException {
-		byte[] resourceKey = MediaResource.computeResourceKey(file);
+//		byte[] resourceKey = MediaResource.computeResourceKey(file);
 		
 		Iterator<Entry<String, NeighborPeerDescriptor>> it = storePeerListManager
 				.entrySet().iterator();
 		int i = 0;
-		int numOfFragments = MediaResource.computeNumberOfFragments(file, fragmentSize);
+//		int numOfFragments = MediaResource.computeNumberOfFragments(file, fragmentSize);
 		while (it.hasNext()) {
 			NeighborPeerDescriptor pd = it.next().getValue();
 			

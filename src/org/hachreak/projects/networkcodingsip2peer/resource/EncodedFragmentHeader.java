@@ -19,6 +19,15 @@
 
 package org.hachreak.projects.networkcodingsip2peer.resource;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import org.hachreak.projects.gfjama.matrix.GaloisField;
 
 /**
@@ -31,7 +40,7 @@ import org.hachreak.projects.gfjama.matrix.GaloisField;
  */
 public class EncodedFragmentHeader {
 	
-	private int fragmentKey;
+//	private int fragmentKey;
 	
 //	private byte generationTag;
 	
@@ -43,7 +52,17 @@ public class EncodedFragmentHeader {
 
 	private GaloisField galoisField;
 	
-	public EncodedFragmentHeader(int fragmentKey, byte[] resourceKey, char[] codingVector, int fragmentSize, GaloisField galoisField){//, byte generationTag) {
+	private byte[] fragmentKey;
+	
+	public EncodedFragmentHeader(byte[] resourceKey, char[] codingVector, int fragmentSize, GaloisField galoisField){//, byte generationTag) {
+//		this.fragmentKey = fragmentKey;
+		this.resourceKey = resourceKey;
+		this.codingVector = codingVector;
+		this.fragmentSize = fragmentSize;
+		this.galoisField = galoisField;
+	}
+	
+	public EncodedFragmentHeader(byte[] resourceKey, char[] codingVector, int fragmentSize, GaloisField galoisField, byte[] fragmentKey){
 		this.fragmentKey = fragmentKey;
 		this.resourceKey = resourceKey;
 		this.codingVector = codingVector;
@@ -51,7 +70,7 @@ public class EncodedFragmentHeader {
 		this.galoisField = galoisField;
 	}
 
-	public int getFragmentKey() {
+	public byte[] getFragmentKey() {
 		return fragmentKey;
 	}
 
@@ -61,6 +80,13 @@ public class EncodedFragmentHeader {
 
 	public byte[] getResourceKey() {
 		return resourceKey;
+	}
+
+	/**
+	 * @param fragmentKey the fragmentKey to set
+	 */
+	public void setFragmentKey(byte[] fragmentKey) {
+		this.fragmentKey = fragmentKey;
 	}
 
 	/**
@@ -79,5 +105,22 @@ public class EncodedFragmentHeader {
 		return galoisField;
 	}
 	
+	/**
+	 * Return a unique identifier of fragment (digest SHA-256)
+	 * 
+	 * @return SHA-256 of resource
+	 * @throws NoSuchAlgorithmException
+	 * @throws IOException
+	 */
+	public static byte[] computeFragmentKey(EncodedFragment fragment) throws NoSuchAlgorithmException, IOException {
+	
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		String text = new String(fragment.getBuffer());
+
+		md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
+		byte[] digest = md.digest();
+
+		return digest;
+	}
 	
 }

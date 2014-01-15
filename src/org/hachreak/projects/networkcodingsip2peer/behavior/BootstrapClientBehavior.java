@@ -17,19 +17,19 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.behaviour;
+package org.hachreak.projects.networkcodingsip2peer.behavior;
 
 import it.unipr.ce.dsg.s2p.peer.PeerListManager;
 
 import org.hachreak.projects.networkcodingsip2peer.exceptions.NoBootstrapConfiguredException;
 import org.hachreak.projects.networkcodingsip2peer.peer.SimplePeer;
 
-public class BootstrapClientBehaviour extends FillPeerListClientBehaviour {
+public class BootstrapClientBehavior extends FillPeerListClientBehavior {
 	
 	private PeerListManager peerListToRefill;
 	private PeerListManager peerListToAsk;
 
-	public BootstrapClientBehaviour(SimplePeer peer, int peerRequired) throws NoBootstrapConfiguredException {
+	public BootstrapClientBehavior(SimplePeer peer, int peerRequired) throws NoBootstrapConfiguredException {
 		super(peer, peer.getBootstrapPeer(), peerRequired);
 		
 		peerListToRefill = peer.getPeerList();
@@ -55,13 +55,13 @@ public class BootstrapClientBehaviour extends FillPeerListClientBehaviour {
 	}
 
 	@Override
-	protected void fireFullFillStorePeerList() {
+	protected void fireFullFillPeerList() {
 		// remove me from behaviours
 		getPeer().getBehaviours().remove(this.getClass().toString());
 
 //		System.out.println("[BootstrapClientBehaviour] size behaviour ");//+getPeer().getBehaviours().size()+ " da cancellare: "+k);
 		// advice listeners
-		super.fireFullFillStorePeerList();
+		super.fireFullFillPeerList();
 	}
 
 	

@@ -55,10 +55,10 @@ public class EncapsulatedEncodedFragment {
 	 */
 	public static EncodedFragmentHeader encapsulate(EncodedFragmentHeader header) {
 		return new EncodedFragmentHeader(
-				header.getFragmentKey(), header.getResourceKey(),
+				header.getResourceKey(),
 				EncapsulatedEncodedFragment.encodeCharVector(header
 						.getCodingVector()), header.getFragmentSize(),
-				header.getGaloisField());
+				header.getGaloisField(), header.getFragmentKey());
 	}
 	
 	/**
@@ -81,15 +81,18 @@ public class EncapsulatedEncodedFragment {
 	 */
 	public static EncodedFragmentHeader decapsulate(EncodedFragmentHeader header){
 		return new EncodedFragmentHeader(
-				header.getFragmentKey(), header.getResourceKey(),
+				header.getResourceKey(),
 				EncapsulatedEncodedFragment.decodeCharVector(header
 						.getCodingVector()), header.getFragmentSize(),
-						header.getGaloisField());
+						header.getGaloisField(), header.getFragmentKey());
 	}
 
 	public static EncodedFragmentHeader decodeJSONHeader(JSONObject headerJSONArray) throws JSONException{
 				// fragment key
-				int fragmentKey = headerJSONArray.getInt("fragmentKey");
+				JSONArray fragmentKeyJSONArray = (JSONArray) headerJSONArray
+						.get("fragmentKey");
+				byte[] fragmentKey = EncapsulatedEncodedFragment.decodeJSONArray2byte(fragmentKeyJSONArray);
+				
 				// fragment size
 				int fragmentSize = headerJSONArray.getInt("fragmentSize");
 
@@ -114,8 +117,7 @@ public class EncapsulatedEncodedFragment {
 						.getJSONObject("galoisField").getInt("n"));
 
 				// get original header
-				return new EncodedFragmentHeader(fragmentKey,
-						resourceKey, codingVector, fragmentSize, galoisField);
+				return new EncodedFragmentHeader(resourceKey, codingVector, fragmentSize, galoisField, fragmentKey);
 
 	}
 	

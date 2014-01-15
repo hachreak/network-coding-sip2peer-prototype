@@ -17,7 +17,7 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.behaviour;
+package org.hachreak.projects.networkcodingsip2peer.behavior;
 
 import it.unipr.ce.dsg.s2p.peer.PeerListManager;
 
@@ -30,12 +30,12 @@ import org.hachreak.projects.networkcodingsip2peer.peer.SimplePeer;
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
  * 
  */
-public class FillStorePeerListClientBehaviour extends FillPeerListClientBehaviour {
+public class FillStorePeerListClientBehavior extends FillPeerListClientBehavior {
 
 	private PeerListManager peerListToRefill;
 	private PeerListManager peerListToAsk;
 
-	public FillStorePeerListClientBehaviour(SimplePeer peer,
+	public FillStorePeerListClientBehavior(SimplePeer peer,
 			PeerListManager peerList, int peerRequired) {
 		super(peer, peerList, peerRequired);
 		
@@ -58,12 +58,12 @@ public class FillStorePeerListClientBehaviour extends FillPeerListClientBehaviou
 	}
 	
 	@Override
-	protected void fireFullFillStorePeerList() {
+	protected void fireFullFillPeerList() {
 		// remove me from behaviours
 		getPeer().getBehaviours().remove(this.getClass().toString());
 
 		// advice listeners
-		super.fireFullFillStorePeerList();
+		super.fireFullFillPeerList();
 	}
 	
 //

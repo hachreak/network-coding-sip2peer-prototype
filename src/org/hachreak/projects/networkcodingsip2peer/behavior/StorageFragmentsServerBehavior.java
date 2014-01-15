@@ -17,7 +17,7 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.behaviour;
+package org.hachreak.projects.networkcodingsip2peer.behavior;
 
 import it.unipr.ce.dsg.s2p.org.json.JSONArray;
 import it.unipr.ce.dsg.s2p.org.json.JSONException;
@@ -35,7 +35,7 @@ import org.hachreak.projects.networkcodingsip2peer.resource.StorageFragments;
 import org.hachreak.projects.networkcodingsip2peer.utils.EncapsulatedEncodedFragment;
 import org.hachreak.projects.networkcodingsip2peer.utils.JSONObject2Peer;
 
-public class StorageFragmentsServerBehaviour extends Behaviour {
+public class StorageFragmentsServerBehavior extends Behavior {
 //	private SimplePeer peer;
 //	private List<EncodedFragment> fragments = new ArrayList<EncodedFragment>();
 	
@@ -43,7 +43,7 @@ public class StorageFragmentsServerBehaviour extends Behaviour {
 
 	private StorageFragments storage;
 	
-	public StorageFragmentsServerBehaviour(SimplePeer peer, StorageFragments storage) throws IOException {
+	public StorageFragmentsServerBehavior(SimplePeer peer, StorageFragments storage) throws IOException {
 		super(peer);
 		initPeerConfig(peer);
 		this.storage = storage;
@@ -60,7 +60,7 @@ public class StorageFragmentsServerBehaviour extends Behaviour {
 	public void onReceivedJSONMsg(String type, JSONObject jsonMsg) {
 		String name = getPeer().getPeerDescriptor().getName();
 
-		 System.out.println("[ "+name+" ] receive msg type "+type);
+		System.out.println("[ "+name+" ] receive msg type "+type);
 
 		try {
 			JSONObject params = jsonMsg.getJSONObject("payload").getJSONObject(

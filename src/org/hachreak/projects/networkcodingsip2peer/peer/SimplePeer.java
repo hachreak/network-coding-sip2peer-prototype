@@ -39,8 +39,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.hachreak.projects.networkcodingsip2peer.actionListener.FullFillPeerListener;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.Behaviour;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.BootstrapClientBehaviour;
+import org.hachreak.projects.networkcodingsip2peer.behavior.Behavior;
+import org.hachreak.projects.networkcodingsip2peer.behavior.BootstrapClientBehavior;
 import org.hachreak.projects.networkcodingsip2peer.exceptions.NoBootstrapConfiguredException;
 import org.hachreak.projects.networkcodingsip2peer.exceptions.NotEnoughPeerException;
 import org.hachreak.projects.networkcodingsip2peer.msg.RefillPeerListMessage;
@@ -61,7 +61,7 @@ public class SimplePeer extends Peer {
 
 	private NeighborPeerDescriptor bootstrapPeer = null;
 
-	private Map<String, Behaviour> behaviours = new HashMap<String, Behaviour>();
+	private Map<String, Behavior> behaviours = new HashMap<String, Behavior>();
 
 	/**
 	 * configuration's file
@@ -143,7 +143,7 @@ public class SimplePeer extends Peer {
 				REQ_NPEER_DEFAULT));
 		System.out.println("peer richiesti "+peerRequired);
 //		final String name = this.getPeerDescriptor().getName();
-		BootstrapClientBehaviour bcb = new BootstrapClientBehaviour(this, peerRequired);
+		BootstrapClientBehavior bcb = new BootstrapClientBehavior(this, peerRequired);
 		bcb.addFullFillPeerListener(listener);
 		
 		Thread thread = new Thread(bcb);
@@ -184,7 +184,7 @@ public class SimplePeer extends Peer {
 	 * @param jsonMsg
 	 */
 	private void execBehaviours(String type, JSONObject jsonMsg) {
-		Iterator<Entry<String, Behaviour>> i = behaviours.entrySet().iterator();
+		Iterator<Entry<String, Behavior>> i = behaviours.entrySet().iterator();
 		while (i.hasNext()) {
 			i.next().getValue().onReceivedJSONMsg(type, jsonMsg);
 		}
@@ -198,7 +198,7 @@ public class SimplePeer extends Peer {
 		return peerDescriptor;
 	}
 
-	public Map<String, Behaviour> getBehaviours() {
+	public Map<String, Behavior> getBehaviours() {
 		return behaviours;
 	}
 

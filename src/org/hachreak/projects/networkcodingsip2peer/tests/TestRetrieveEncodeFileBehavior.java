@@ -24,14 +24,15 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hachreak.projects.gfjama.matrix.GFMatrixException;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.Behaviour;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.PublishEncodedFileClientBehaviour;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.RetrieveEncodedFileClientBehaviour;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.StorageFragmentsServerBehaviour;
+import org.hachreak.projects.networkcodingsip2peer.behavior.Behavior;
+import org.hachreak.projects.networkcodingsip2peer.behavior.PublishEncodedFileClientBehavior;
+import org.hachreak.projects.networkcodingsip2peer.behavior.RetrieveEncodedFileClientBehavior;
+import org.hachreak.projects.networkcodingsip2peer.behavior.StorageFragmentsServerBehavior;
 import org.hachreak.projects.networkcodingsip2peer.peer.SimplePeer;
 import org.hachreak.projects.networkcodingsip2peer.resource.EncodedFragment;
 import org.hachreak.projects.networkcodingsip2peer.resource.MapUniqueFragmentStorageFragments;
@@ -41,7 +42,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestRetrieveEncodeFileBehaviour {
+public class TestRetrieveEncodeFileBehavior {
 
 	private int numberOfClients = 100;
 	private String configFileBootstrap = "config/bootstrappeertest.cfg";
@@ -52,7 +53,7 @@ public class TestRetrieveEncodeFileBehaviour {
 	private File fileOutput = new File(
 			"tests/TestRetrieveEncodeFileBehaviour.decoded.txt");
 	private Thread thread;
-	private List<EncodedFragment> fragments;
+//	private List<EncodedFragment> fragments;
 	private int received;
 	private List<EncodedFragment> fragmentsRetrieved;
 	private InitNetwork initializer;
@@ -73,20 +74,32 @@ public class TestRetrieveEncodeFileBehaviour {
 	
 	@Test
 	public void testRetrieveFragments() throws IOException {
-		fragments = new ArrayList<EncodedFragment>();
+//		fragments = new ArrayList<EncodedFragment>();
 		fragmentsRetrieved = new ArrayList<EncodedFragment>();
 		
 		// get peers of network
 		List<SimplePeer> peers = initializer.getPeers();
 
-		List<Behaviour> l = new ArrayList<Behaviour>(numberOfClients);
+		List<Behavior> l = new ArrayList<Behavior>(numberOfClients);
 		
 		// behaviour: publish a file
-		PublishEncodedFileClientBehaviour pefcb = new PublishEncodedFileClientBehaviour(
+		PublishEncodedFileClientBehavior pefcb = new PublishEncodedFileClientBehavior(
 				peers.get(0), peers.get(0).getPeerList(), file);
+		
+		
+		MediaResource mr = pefcb.getMediaResource();
+		int numOfFragments = MediaResource.computeNumberOfFragments(file, mr.getFragmentSize());
+		byte[] resourceKey = null;
+		try {
+			resourceKey = mr.getResourceKey();
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		// behaviour: retrieve a file
-		RetrieveEncodedFileClientBehaviour refcb = new RetrieveEncodedFileClientBehaviour(
-				peers.get(0), peers.get(0).getPeerList(), file, new MapUniqueFragmentStorageFragments(){
+		RetrieveEncodedFileClientBehavior refcb = new RetrieveEncodedFileClientBehavior(
+				peers.get(0), peers.get(0).getPeerList(), resourceKey, numOfFragments, new MapUniqueFragmentStorageFragments(){
 
 					@Override
 					public void put(EncodedFragment fragment) {
@@ -104,7 +117,7 @@ public class TestRetrieveEncodeFileBehaviour {
 		received = 0;
 		// for each other peer: add "Store Fragments Peer" behaviour 
 		for (int i = 1; i < peers.size(); i++) {
-			StorageFragmentsServerBehaviour pfsb = new StorageFragmentsServerBehaviour(
+			StorageFragmentsServerBehavior pfsb = new StorageFragmentsServerBehavior(
 					peers.get(i), new MapUniqueFragmentStorageFragments() {
 
 						@Override
@@ -157,6 +170,7 @@ public class TestRetrieveEncodeFileBehaviour {
 		thread = new Thread(refcb);
 		thread.start();
 
+		// wait that enough fragments are received
 		while (received < inNumOfFragment) {
 			try {
 				Thread.sleep(100);

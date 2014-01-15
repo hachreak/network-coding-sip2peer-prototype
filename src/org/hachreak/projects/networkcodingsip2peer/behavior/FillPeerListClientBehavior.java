@@ -17,7 +17,7 @@
  *
  */
 
-package org.hachreak.projects.networkcodingsip2peer.behaviour;
+package org.hachreak.projects.networkcodingsip2peer.behavior;
 
 import it.unipr.ce.dsg.s2p.org.json.JSONException;
 import it.unipr.ce.dsg.s2p.org.json.JSONObject;
@@ -42,7 +42,7 @@ import org.hachreak.projects.networkcodingsip2peer.utils.JSONObject2Peer;
  * @author Leonardo Rossi <leonardo.rossi@studenti.unipr.it>
  * 
  */
-public class FillPeerListClientBehaviour extends Behaviour {
+public class FillPeerListClientBehavior extends Behavior {
 
 	private int countPendingRequest = 0;
 
@@ -52,14 +52,14 @@ public class FillPeerListClientBehaviour extends Behaviour {
 
 	private List<FullFillPeerListener> fullFillPeerlisteners = new ArrayList<FullFillPeerListener>();
 
-	public FillPeerListClientBehaviour(SimplePeer peer,
+	public FillPeerListClientBehavior(SimplePeer peer,
 			PeerListManager peerList, int peerRequired) {
 		super(peer);
 
 		init(peer, peerList, peerRequired);
 	}
 
-	public FillPeerListClientBehaviour(SimplePeer peer,
+	public FillPeerListClientBehavior(SimplePeer peer,
 			NeighborPeerDescriptor desc, int peerRequired) {
 		super(peer);
 
@@ -97,6 +97,7 @@ public class FillPeerListClientBehaviour extends Behaviour {
 					NeighborPeerDescriptor pd = i.next().getValue();
 
 					// send request of a peer list
+					System.out.println("[FillPeerClient] ask "+peers_req_by_each_peer+" peers");
 					getPeer().send(
 							pd,
 							new RefillPeerListMessage(getPeer()
@@ -120,7 +121,7 @@ public class FillPeerListClientBehaviour extends Behaviour {
 	}
 
 	public void onReceivedJSONMsg(String type, JSONObject jsonMsg) {
-		// System.out.println("[FillPeerClient] msg type "+type);
+//		 System.out.println("[FillPeerClient] msg type "+type);
 
 		try {
 			//
@@ -154,13 +155,14 @@ public class FillPeerListClientBehaviour extends Behaviour {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
+//							System.out.println("[FillPeerClient] size("+getPeerListToRefill().size()+") required: "+peerRequired);
 							// a start a new request
 							askForStorePeerList();
 						}
 					} else {
 						// I reached the peer list size required
 						// System.out.println("[[[ BEHAVIOUR ]]] I have enough peer ");
-						fireFullFillStorePeerList();
+						fireFullFillPeerList();
 					}
 				}
 			}
@@ -172,7 +174,7 @@ public class FillPeerListClientBehaviour extends Behaviour {
 	/**
 	 * Fire a new event: I reach the peer list size required
 	 */
-	protected void fireFullFillStorePeerList() {
+	protected void fireFullFillPeerList() {
 		// advice listeners
 		PeerListManager peerListFilled = getPeerListToRefill();
 		Iterator<FullFillPeerListener> i = fullFillPeerlisteners.iterator();

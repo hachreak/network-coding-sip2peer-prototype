@@ -21,7 +21,7 @@ package org.hachreak.projects.networkcodingsip2peer.peer;
 
 import java.io.IOException;
 
-import org.hachreak.projects.networkcodingsip2peer.behaviour.BootstrapServerBehaviour;
+import org.hachreak.projects.networkcodingsip2peer.behavior.BootstrapServerBehavior;
 import org.hachreak.projects.networkcodingsip2peer.exceptions.NoBootstrapConfiguredException;
 
 /**
@@ -36,6 +36,6 @@ public class BootstrapPeer extends SimplePeer {
 		super(pathConfig, "bootstrap");// "b7d513f84ad6813570082c2e8971e894");
 		
 		// add Behaviour
-		new BootstrapServerBehaviour(this);
+		new BootstrapServerBehavior(this);
 	}
 }

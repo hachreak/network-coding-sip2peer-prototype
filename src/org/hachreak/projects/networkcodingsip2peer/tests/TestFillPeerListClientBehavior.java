@@ -7,14 +7,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.hachreak.projects.networkcodingsip2peer.actionListener.FullFillPeerListener;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.FillPeerListClientBehaviour;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.FillPeerListServerBehaviour;
+import org.hachreak.projects.networkcodingsip2peer.behavior.FillPeerListClientBehavior;
+import org.hachreak.projects.networkcodingsip2peer.behavior.FillPeerListServerBehavior;
 import org.hachreak.projects.networkcodingsip2peer.peer.SimplePeer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestFillPeerListClientBehaviour {
+public class TestFillPeerListClientBehavior {
 
 	private String configFileBootstrap = "config/bootstrappeertest.cfg";
 	private String configFile = "config/TestFillStorePeerListBehaviour.cfg";
@@ -36,16 +36,16 @@ public class TestFillPeerListClientBehaviour {
 	public void testFillPeerListBehaviour() {
 		List<SimplePeer> peers = initializer.getPeers();
 		Iterator<SimplePeer> i = peers.iterator();
-		List<FillPeerListServerBehaviour> bs = new ArrayList<FillPeerListServerBehaviour>();
+		List<FillPeerListServerBehavior> bs = new ArrayList<FillPeerListServerBehavior>();
 		while(i.hasNext()){
 			SimplePeer p = i.next();
-			bs.add(new FillPeerListServerBehaviour(p));
+			bs.add(new FillPeerListServerBehavior(p));
 			System.out.println(p.getPeerList().size());
 		}
 		
 		finish = false;
-		SimplePeer peer = peers.get(20);
-		FillPeerListClientBehaviour bc = new FillPeerListClientBehaviour(peer, peer.getPeerList(), 30);
+		SimplePeer peer = peers.get(70);
+		FillPeerListClientBehavior bc = new FillPeerListClientBehavior(peer, peer.getPeerList(), 50);
 		bc.addFullFillPeerListener(new FullFillPeerListener() {
 			
 			public void action(PeerListManager plm) {

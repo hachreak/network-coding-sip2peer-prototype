@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="lib/server.jar"/>
 	<classpathentry kind="lib" path="lib/sip.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.hachreak.projects.gfjama"/>
+	<classpathentry kind="lib" path="lib/gfjama-0.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

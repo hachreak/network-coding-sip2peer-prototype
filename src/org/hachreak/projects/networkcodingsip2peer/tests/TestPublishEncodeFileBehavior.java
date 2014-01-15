@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hachreak.projects.gfjama.matrix.GFMatrixException;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.Behaviour;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.PublishEncodedFileClientBehaviour;
-import org.hachreak.projects.networkcodingsip2peer.behaviour.StorageFragmentsServerBehaviour;
+import org.hachreak.projects.networkcodingsip2peer.behavior.Behavior;
+import org.hachreak.projects.networkcodingsip2peer.behavior.PublishEncodedFileClientBehavior;
+import org.hachreak.projects.networkcodingsip2peer.behavior.StorageFragmentsServerBehavior;
 import org.hachreak.projects.networkcodingsip2peer.peer.SimplePeer;
 import org.hachreak.projects.networkcodingsip2peer.resource.EncodedFragment;
 import org.hachreak.projects.networkcodingsip2peer.resource.MediaResource;
@@ -40,7 +40,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestPublishEncodeFileBehaviour {
+public class TestPublishEncodeFileBehavior {
 
 //	private int numberOfClients = 100;
 //	private List<SimplePeer> peers = new ArrayList<SimplePeer>();
@@ -79,13 +79,13 @@ public class TestPublishEncodeFileBehaviour {
 		List<SimplePeer> peers = initializer.getPeers();
 		int numberOfClients = peers.size();
 		
-		List<Behaviour> l = new ArrayList<Behaviour>(numberOfClients);
-		PublishEncodedFileClientBehaviour pefcb = new PublishEncodedFileClientBehaviour(peers.get(0), peers.get(0)
+		List<Behavior> l = new ArrayList<Behavior>(numberOfClients);
+		PublishEncodedFileClientBehavior pefcb = new PublishEncodedFileClientBehavior(peers.get(0), peers.get(0)
 				.getPeerList(), file);
 		l.add(pefcb);
 		received = 0;
 		for (int i = 1; i < peers.size(); i++) {
-			StorageFragmentsServerBehaviour pfsb = new StorageFragmentsServerBehaviour(peers.get(i), new StorageFragments(){
+			StorageFragmentsServerBehavior pfsb = new StorageFragmentsServerBehavior(peers.get(i), new StorageFragments(){
 				
 				public void put(EncodedFragment fragment) {
 					fragments.add(fragment);
@@ -107,7 +107,7 @@ public class TestPublishEncodeFileBehaviour {
 			l.add(pfsb);
 		}
 		
-		PublishEncodedFileClientBehaviour b = (PublishEncodedFileClientBehaviour) l
+		PublishEncodedFileClientBehavior b = (PublishEncodedFileClientBehavior) l
 				.get(0);
 		
 		thread = new Thread(b);
